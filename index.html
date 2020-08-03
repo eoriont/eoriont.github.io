@@ -1,0 +1,49 @@
+---
+layout: default
+title: oriont.net
+subtitle: I like to code
+---
+
+{% assign post = site.posts[0] %} {% assign project = site.projects[0] %} {%
+assign tutorial = site.tutorials[0] %}
+<h1>My latest post:</h1>
+<div class="cards">
+  <a href="{{post.url}}" class="card">
+    <div class="cardheader">
+      <h2>{{post.title}} || {{post.date | date: '%B %d, %Y'}}</h2>
+    </div>
+    <div class="cardbody">
+      <p>{{post.description}}</p>
+    </div>
+  </a>
+</div>
+<h1>My latest project:</h1>
+<div class="cards">
+  <a href="{{project.url}}" class="card">
+    <div class="cardheader">
+      <h2>{{project.title}} || {{project.date | date: '%B %d, %Y'}}</h2>
+    </div>
+    <div class="cardbody">
+      <p>{{project.description}}</p>
+    </div>
+  </a>
+</div>
+
+<h1>My latest tutorial:</h1>
+<p>No tutorials yet!</p>
+<!-- <div class="cards">
+  <a href="{{tutorial.url}}" class="card">
+    <div class="cardheader">
+      <h2>{{tutorial.title}} || {{tutorial.date | date: '%B %d, %Y'}}</h2>
+    </div>
+    <div class="cardbody">
+      <p>{{tutorial.description}}</p>
+    </div>
+  </a>
+</div> -->
+
+<h1>Link to ODraw</h1>
+<a href="https://oriont.net/odraw">ODraw</a>
+
+<h1>About me</h1>
+<a href="/about.html">Go to my about page!</a>

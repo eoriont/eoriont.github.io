@@ -1,0 +1,21 @@
+---
+layout: default
+title: Blog Posts
+subtitle: What I'm up to
+---
+
+<h1>Blog Posts</h1>
+
+<div class="cards">
+  {% for post in site.posts %}
+  <a href="{{post.url}}" class="card">
+    <div class="cardheader">
+      <h2>{{post.title}} || {{post.date | date: '%B %d, %Y'}}</h2>
+    </div>
+    <div class="cardbody">
+      <p>{{post.description}}</p>
+    </div>
+  </a>
+
+  {% endfor %}
+</div>

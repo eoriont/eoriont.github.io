@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+
+    <link rel="stylesheet" href="/css/style.css" />
+    <script src="/js/nav.js"></script>
+    <title>{{ page.title }}</title>
+  </head>
+  <body>
+    <div class="pageheader">
+      <h2 class="title">{{ page.title }}</h2>
+      <h5 class="subtitle">{{ page.subtitle }}</h5>
+    </div>
+    {% include navbar.html %}
+    <div class="container content">{{ content }}</div>
+    <div class="footer"></div>
+  </body>
+</html>
