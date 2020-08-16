@@ -1,3 +1,8 @@
+---
+---
+
+@import "fruity.scss";
+
 body {
   margin: 0;
   background-color: #dfe3f1;
@@ -6,6 +11,11 @@ body {
 .nav {
   background-color: #45b69c;
 }
+
+pre.highlight {
+  padding: 10px;
+}
+
 ul.nav {
   list-style-type: none;
   margin: 0;
@@ -59,9 +69,7 @@ ul.nav li.active {
     float: right;
     display: block;
   }
-}
 
-@media screen and (max-width: 960px) {
   .nav.responsive {
     position: relative;
   }
@@ -74,6 +82,13 @@ ul.nav li.active {
     float: none;
     display: block;
     text-align: left;
+  }
+
+  .card {
+    width: 95%;
+  }
+  .container {
+    width: 95%;
   }
 }
 
@@ -113,15 +128,6 @@ ul.nav li.active {
   width: 100%;
   margin: 20px 0px;
   text-decoration: none;
-}
-
-@media screen and (max-width: 960px) {
-  .card {
-    width: 100%;
-  }
-  .container {
-    width: 100%;
-  }
 }
 
 .cardheader {

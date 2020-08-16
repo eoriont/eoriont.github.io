@@ -38,6 +38,11 @@ plugins:
 #
 # Excluded items can be processed by explicitly listing the directories or
 # their entries' file path in the `include:` list.
+permalink: /posts/:title
+
+sass:
+  sass_dir: _sass
+  style: compressed
 
 collections:
   projects:
