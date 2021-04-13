@@ -1,13 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>oriont</title>
+    <meta name="author" content="Elijah Tarr" />
+    <meta name="description" content="oriont's posts" />
+    <meta name="keywords" content="coding,programming" />
     <link
+      href="https://unpkg.com/tailwindcss/dist/tailwind.min.css"
       rel="stylesheet"
-      href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
     />
+
+    <!--Replace with your tailwind.css once created-->
+    <!-- Template source: https://www.tailwindtoolbox.com/ -->
+
     {% if page.usemathjax %}
-      <!-- <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
 
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
 
@@ -18,17 +27,53 @@
       <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"
           onload="renderMathInElement(document.body);"></script>
     {% endif %}
-    <link rel="stylesheet" href="/assets/css/style.css" />
-    <script src="/assets/js/nav.js"></script>
-    <title>{{ page.title }}</title>
+
   </head>
-  <body>
-    <div class="pageheader">
-      <h2 class="title">{{ page.title }}</h2>
-      <h5 class="subtitle">{{ page.subtitle }}</h5>
-    </div>
-    {% include navbar.html %}
-    <div class="container content">{{ content }}</div>
-    <div class="footer"></div>
-  </body>
+
+
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+
+	{% include newnav.html %}
+
+	<!--Container-->
+	<div class="container w-full md:max-w-3xl mx-auto pt-20">
+
+		<div class="w-full px-4 md:px-6 text-xl text-gray-800 leading-normal" style="font-family: Georgia, serif;">
+
+			<!--Title-->
+			<div class="font-sans">
+        {% if page.tags contains "post" %}
+          <p class="text-base md:text-sm text-green-500 font-bold">&lt; <a href="/posts" class="text-base md:text-sm text-green-500 font-bold no-underline hover:underline">Back to posts</a></p>
+        {% endif %}
+        <h1 class="font-bold font-sans break-normal text-gray-900 pt-6 pb-2 text-3xl md:text-4xl">{{ page.title }}</h1>
+        {% if page.tags contains "post" %}
+          <p class="text-sm md:text-base font-normal text-gray-600">Published {{ page.date | date: "%-d %B %Y" }}</p>
+          <br>
+        {% endif %}
+			</div>
+
+
+			<!--Post Content-->
+
+      {{ content }}
+
+			<!-- / Post Content -->
+
+		</div>
+
+    <br>
+
+    {% if page.tags contains 'post' %}
+      {% include postjargon.html %}
+    {% endif %}
+
+	</div>
+	<!--/container-->
+
+	{% include newfooter.html %}
+
+	<script src="/assets/js/progressbar.js"></script>
+
+</body>
+
 </html>

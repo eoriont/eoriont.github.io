@@ -1,7 +1,5 @@
 ---
-layout: default
 title: About
-subtitle: My (small) Biography
 ---
 
 # About me

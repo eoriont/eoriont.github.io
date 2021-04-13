@@ -1,9 +1,6 @@
 ---
-layout: default
-title: "Removing the date from jekyll posts"
-categories: post
-subtitle: "Because who wants it in their links, right?"
-description: "When you make a jekyll site, the first thing you notice is the super long annoying post url and filenames you have to manually type. I became enlightened on how to get rid of them!"
+title: Removing the date from jekyll posts
+tags: post jekyll
 ---
 
 # Quick answer

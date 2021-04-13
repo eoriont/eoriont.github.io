@@ -1,9 +1,6 @@
 ---
-layout: default
-title: "Creating a live newton fractal using JS + WebGL"
-categories: post
-subtitle: "Prepare for mesmerization!"
-description: "In this post I explore the steps I went through in order to create a newton fractal, complete with an (incomplete) math equation parser."
+title: Creating a live newton fractal using JS + WebGL
+tags: post newtonfractal
 usemathjax: true
 ---
 
@@ -382,16 +379,16 @@ Multiplication was also relatively easy, I just used the distributive property t
 
 $$
 (a + bi)^{(c + di)} \\
-= (re^{i \theta})^{c+di}
-r = \sqrt{a^2 + b^2}
-\theta = \text{tan}^{-1} \dfrac{b}{a}
-= (re^{i \theta})^c \dot (re^{i \theta})^{di}
-= r^c e^{i c \theta} \dot r^{di} e^{-d \theta}
-= r^c e^{-d \theta} e^{i (c \theta + d \ln r)}
-= r^c e^{-d \theta} (\text{cos} (c \theta + d \ln r) + i \text{sin}(c \theta + d \ln r)
-x =r^c e^{-d \theta}
-y = c \theta + d \ln r
-= x \text{cos} y + (x \text{sin} y) i
+= (re^{i \theta})^{c+di} \\
+r = \sqrt{a^2 + b^2} \\
+\theta = \text{tan}^{-1} \dfrac{b}{a} \\
+= (re^{i \theta})^c \dot (re^{i \theta})^{di} \\
+= r^c e^{i c \theta} \dot r^{di} e^{-d \theta} \\
+= r^c e^{-d \theta} e^{i (c \theta + d \ln r)} \\
+= r^c e^{-d \theta} (\text{cos} (c \theta + d \ln r) + i \text{sin}(c \theta + d \ln r) \\
+x =r^c e^{-d \theta} \\
+y = c \theta + d \ln r \\
+= x \text{cos} y + (x \text{sin} y) i \\
 $$
 
 Now, we can easily convert these formulas into code using lambda functions:

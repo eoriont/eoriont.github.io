@@ -28,7 +28,6 @@ twitter_username: eoriont
 github_username: eoriont
 
 # Build settings
-theme: minima
 plugins:
   - jekyll-feed
 # Exclude from processing.
@@ -44,20 +43,21 @@ sass:
   sass_dir: _sass
   style: compressed
 
-collections:
-  projects:
-    output: true
-  tutorials:
-    output: true
-#
-# exclude:
-#   - .sass-cache/
-#   - .jekyll-cache/
-#   - gemfiles/
-#   - Gemfile
-#   - Gemfile.lock
-#   - node_modules/
-#   - vendor/bundle/
-#   - vendor/cache/
-#   - vendor/gems/
-#   - vendor/ruby/
+defaults:
+  -
+    scope:
+      path: ""
+    values:
+      layout: "default"
+
+exclude:
+  - .sass-cache/
+  - .jekyll-cache/
+  - gemfiles/
+  - Gemfile
+  - Gemfile.lock
+  - node_modules/
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
