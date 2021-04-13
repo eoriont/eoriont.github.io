@@ -20,3 +20,10 @@ for (let e of links) {
     e.classList.add("font-bold", "text-green-500");
   }
 }
+
+var paragraphs = markdownDiv.getElementsByTagName("p");
+for (let e of paragraphs) {
+  if (e.classList.length == 0) {
+    e.classList.add("my-5");
+  }
+}

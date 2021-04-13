@@ -39,6 +39,9 @@ plugins:
 # their entries' file path in the `include:` list.
 permalink: /posts/:title
 
+markdown: kramdown
+highlighter: rouge
+
 sass:
   sass_dir: _sass
   style: compressed
