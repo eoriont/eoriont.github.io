@@ -55,7 +55,9 @@
 
 			<!--Post Content-->
 
-      {{ content }}
+      <div id="markdown">
+        {{ content }}
+      </div>
 
 			<!-- / Post Content -->
 
@@ -73,6 +75,11 @@
 	{% include newfooter.html %}
 
 	<script src="/assets/js/progressbar.js"></script>
+
+  <!-- Assumes that posts have at least 1 tag -->
+  {% if page.tags.size > 0 %}
+    <script src="/assets/js/mdclasses.js"></script>
+  {% endif %}
 
 </body>
 

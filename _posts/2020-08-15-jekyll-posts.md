@@ -11,8 +11,8 @@ Edit your `_config.yml` file, and add this singular line:
 permalink: /posts/:title
 ```
 
-That removes the part visible to the reader. (the url part) The last thing you would have to remove is the date from the filename.
-Unfortunatly, jekyll is built with the date required in the filename, so you can't actually remove it.
+That removes the part visible to the reader. (The URL part) The last thing you would have to remove is the date from the filename.
+Unfortunately, jekyll is built with the date required in the filename, so you can't actually remove it.
 BUT, there is an easy workaround, and that is to just make another collection.
 You could name it something like 'blogs' but you can't name it 'posts' because that collection is built in.
 <br><br>
