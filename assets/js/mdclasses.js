@@ -34,3 +34,16 @@ for (let e of paragraphs) {
     e.classList.add("my-5");
   }
 }
+
+var codeblocks = markdownDiv.querySelectorAll("div.highlight");
+for (let e of codeblocks) {
+  e.classList.add("overflow-x-scroll");
+}
+
+var images = markdownDiv.getElementsByTagName("img");
+for (let e of images) {
+  e.classList.add("md:max-w-xl", "mx-auto");
+}
+
+// You can't do this for mathjax or katex because they load
+// After the page loads

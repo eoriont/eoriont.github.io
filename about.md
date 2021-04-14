@@ -23,8 +23,12 @@ The technologies I have experience with include:
 - C (Arduino)
 - Ruby (Rails / Jekyll)
 
-I want to learn rust, because I think it will be a very popular language in the future.
-Also, it's the 5th fastest growing programming language on github!
+I'm currently learning rust by making a fat12 image driver for my custom operating system.
+You can expect posts explaining more to be out soon.
 I feel it is better to master a language rather than to learn a lot of languages but not be able to write good code in them.
 Although, I like to learn new things, so I end up breaking that rule alot. :)
 Another reason is because if I learn a new language, I'll have to update this list!
+
+# My Resume
+
+<a class="text-green-500 text-2xl font-bold" href="/resume">View my Resume</a>

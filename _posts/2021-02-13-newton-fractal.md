@@ -63,9 +63,9 @@ We have:
 
 $$
 y = 0 \\
-0 - f(x_1) = f'(x_1) (x - x_1)
--\dfrac{f(x_1)}{f'(x_1)} = x - x_1
-x = x_1 - \dfrac{f(x_1)}{f'(x_1)}
+0 - f(x_1) = f'(x_1) (x - x_1) \\
+-\dfrac{f(x_1)}{f'(x_1)} = x - x_1 \\
+x = x_1 - \dfrac{f(x_1)}{f'(x_1)} \\
 $$
 
 Now, we have an approximation for the y-intercept! It's modeled as:
@@ -116,7 +116,7 @@ If we were to start *on* the critical point, however, newton's method would dive
 
 $$
 x_1 = x_n - \dfrac{f(x_n)}{f'(x_n)} \\
-= x_n - \dfrac{f(x_n)}{0}
+= x_n - \dfrac{f(x_n)}{0} \\
 = - \infty
 $$
 
@@ -257,8 +257,8 @@ The cool thing with the complex plane is that you can do operations on each poin
 $$
 (5 + 6i)^2 \\
 = (5 + 6i)(5 + 6i) \\
-= 25 + 30i + 30i + 36i^2
-= 25 + 60i - 36
+= 25 + 30i + 30i + 36i^2 \\
+= 25 + 60i - 36 \\
 = -11 + 60i
 $$
 
@@ -370,9 +370,9 @@ ac + adi + bci - bd \\
 $$
 
 $$
-\dfrac{(a+bi)}{(c+di)}
-\dfrac{(a+bi)(c-di)}{(c+di)(c-di)}
-\dfrac{(ac+bd) + (bc - ad)}{c^2 + d^2}
+\dfrac{(a+bi)}{(c+di)} \\
+\dfrac{(a+bi)(c-di)}{(c+di)(c-di)} \\
+\dfrac{(ac+bd) + (bc - ad)}{c^2 + d^2} \\
 $$
 
 Multiplication was also relatively easy, I just used the distributive property to multiply the binomials, I used the imaginary identity, and last I just grouped up the numbers again according to their "imaginary-ness". This last one, complex exponents, is probably the most interesting, as it makes use of [Euler's formula](https://en.wikipedia.org/wiki/Euler%27s_formula), and the polar form of complex numbers. [Blackpenredpen has a great video on this proof](https://www.youtube.com/watch?v=Z4PsLt9_ky8)
@@ -385,9 +385,9 @@ r = \sqrt{a^2 + b^2} \\
 = (re^{i \theta})^c \dot (re^{i \theta})^{di} \\
 = r^c e^{i c \theta} \dot r^{di} e^{-d \theta} \\
 = r^c e^{-d \theta} e^{i (c \theta + d \ln r)} \\
-= r^c e^{-d \theta} (\text{cos} (c \theta + d \ln r) + i \text{sin}(c \theta + d \ln r) \\
-x =r^c e^{-d \theta} \\
 y = c \theta + d \ln r \\
+\theta = r^c e^{-d \theta} (\text{cos} (y) + i \text{sin}(y) \\
+x =r^c e^{-d \theta} \\
 = x \text{cos} y + (x \text{sin} y) i \\
 $$
 
