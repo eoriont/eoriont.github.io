@@ -8,10 +8,7 @@
     <meta name="author" content="Elijah Tarr" />
     <meta name="description" content="oriont's posts" />
     <meta name="keywords" content="coding,programming" />
-    <link
-      href="https://unpkg.com/tailwindcss/dist/tailwind.min.css"
-      rel="stylesheet"
-    />
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
 
     <!--Replace with your tailwind.css once created-->
     <!-- Template source: https://www.tailwindtoolbox.com/ -->
@@ -33,7 +30,7 @@
   </head>
 
 
-<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+<body class="bg-gray-100 leading-normal tracking-normal">
 
 	{% include newnav.html %}
 
@@ -43,11 +40,11 @@
 		<div class="w-full px-4 md:px-6 text-xl text-gray-800 leading-normal" style="font-family: Georgia, serif;">
 
 			<!--Title-->
-			<div class="font-sans">
+			<div class="">
         {% if page.tags contains "post" %}
           <p class="text-base md:text-sm text-green-500 font-bold">&lt; <a href="/posts" class="text-base md:text-sm text-green-500 font-bold no-underline hover:underline">Back to posts</a></p>
         {% endif %}
-        <h1 class="font-bold font-sans break-normal text-gray-900 pt-6 pb-2 text-3xl md:text-4xl">{{ page.title }}</h1>
+        <h1 class="font-bold break-normal text-gray-900 pt-6 pb-2 text-3xl md:text-4xl">{{ page.title }}</h1>
         {% if page.tags contains "post" %}
           <p class="text-sm md:text-base font-normal text-gray-600">Published {{ page.date | date: "%-d %B %Y" }}</p>
           <br>
