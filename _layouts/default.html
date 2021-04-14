@@ -79,7 +79,7 @@
 	<script src="/assets/js/progressbar.js"></script>
 
   <!-- Assumes that posts have at least 1 tag -->
-  {% if page.tags.size > 0 %}
+  {% if page.tags.size > 0 or page.markdown %}
     <script src="/assets/js/mdclasses.js"></script>
   {% endif %}
 

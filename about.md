@@ -1,5 +1,6 @@
 ---
 title: About
+markdown: true
 ---
 
 # About me

@@ -14,6 +14,13 @@ for (let e of lists) {
   }
 }
 
+var lists = markdownDiv.getElementsByTagName("ul");
+for (let e of lists) {
+  if (e.classList.length == 0) {
+    e.classList.add("list-disc");
+  }
+}
+
 var links = markdownDiv.getElementsByTagName("a");
 for (let e of links) {
   if (e.classList.length == 0) {
