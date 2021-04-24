@@ -30,10 +30,10 @@ A sequence of 8 bits is called a *byte*.
 The capacity of most computer-interfaceable storage devices are measured in bytes.
 For example, the computer you have might have 250 gigabytes of storage.
 As you might know already, *giga* means 1 billion, so you have *250 billion* bytes of memory at your disposal!
-The prefix *giga* comes from the orders of magnitude prefixes for SI units, which you can find at [this link](1).
+The prefix *giga* comes from the orders of magnitude prefixes for SI units, which you can find at [this link][1].
 
 There is also another type of prefix, which is very similar to the SI prefixes, but it's in powers of 2.
-You can find a table for them [here](2), and notice how similar they are to the SI prefixes!
+You can find a table for them [here][2], and notice how similar they are to the SI prefixes!
 This is often a source of confusion. I only learned about them recently as well!
 So, if you ever see an 'i' in the middle of a byte unit, just know it's in binary.
 Meaning, 1 KB = 1000 B, but 1 KiB = 1024 B. (Kilobyte vs Kibbibyte)
@@ -121,14 +121,14 @@ If you had an image, it would also be stored here, in binary format. (That may e
 Any file that you would have on your computer is stored in this section of the disk.
 
 Since we have to store all of our files here, this is the biggest section, by far.
-[According to wiki,](4) the maximum volume size for a disk using the FAT12 system is 32 MiB.
+[According to wiki,][3] the maximum volume size for a disk using the FAT12 system is 32 MiB.
 I haven't defined what a volume is, so just understand that the maximum size of the data section can be 32 MiB minus the reserved section, minus the file allocation tables.
 That turns out to still be really close to 32 MiB.
 
 You may ask, "Why would anyone want to use a file system that can only support 32 MiB? I have a single image file that's larger than that!"
 I would tell you that that's a good question!
 But, remember, this file system was introduced in 1977!
-Back then, [some people thought that no one would ever need more than 640k of memory](5), but today, even the lowest end computers have at the very least 2 GB of memory.
+Back then, [some people thought that no one would ever need more than 640k of memory][5], but today, even the lowest end computers have at the very least 2 GB of memory.
 (Memory is not the same thing as storage, but my analogy still stands.)
 Later, we can upgrade to FAT16 or FAT32, which can hold more data.
 
@@ -140,7 +140,7 @@ The last thing you should know about the data section is that the very first fil
 # File Allocation Tables
 
 The file allocation tables are what characterize this file system, and is also the hardest section to understand.
-This is essentially a [linked list](3) which tells us where our files are and which parts of the disk are free for us to put more data in.
+This is essentially a [linked list][3] which tells us where our files are and which parts of the disk are free for us to put more data in.
 
 If you don't understand how linked lists work, I urge you to do some research.
 They are a common data structure used for making dynamically sized lists, and can be modified slightly to make trees, graphs, and even weighted trees and graphs.
@@ -189,7 +189,7 @@ Before I answer any other questions on how the computer may _find_ that file, le
 ## Example 2
 
 Imagine our file is 1536 bytes long exactly.
-Well this is a nice number, because it's exactly $512 * 3$ bytes!
+Well this is a nice number, because it's exactly $$512 * 3$$ bytes!
 This means that it's exactly 3 clusters long!
 (Remember, 1 sector = 1 cluster = 512 bytes)
 
@@ -299,7 +299,7 @@ Now that we have the directory in memory, how do we find the files inside?
 Well, the directory file is just full of 32 byte *directory entries*.
 If you have experience with pointers in C, each directory entry is like a pointer to the file, along with attributes.
 Every byte of the 32 bytes is used for something, including the filename, file extension, attributes, timestamps, the first cluster of the file, file size, and if this entry is actually a *subdirectory file*.
-If you want to see exactly which bytes are used for what, [I recommend you look at page 5 of this document](6).
+If you want to see exactly which bytes are used for what, [I recommend you look at page 5 of this document][6].
 In fact, read the whole thing!
 It was one of the documents _I_ used to learn FAT12.
 
@@ -354,7 +354,7 @@ I'll likely make more in-depth posts about more specific parts of the FAT12 syst
 If you're interested, I'm making a FAT12 implementation in rust right now.
 I'm using it as a project to both improve at rust and FAT12.
 It's a shell that you can copy files from the host OS to a FAT12 disk image, which I can then use to run on a VM emulator.
-If you are interested in it's progress, you can [check out its GitHub page here](7), and you can [watch my occasional streams on twitch](8)
+If you are interested in it's progress, you can [check out its GitHub page here][7], and you can [watch my occasional streams on twitch][8]
 
 If you spotted an error in this post, or have something that you'd like to add, please make a github issue or pull request, as linked to in the footer.
 
