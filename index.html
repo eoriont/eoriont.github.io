@@ -37,3 +37,16 @@ title: Welcome to oriont.net!
 		<p>Occasionally I post videos on youtube, but I prefer to post on my website.</p>
 	</div>
 </div>
+
+
+<h1 class="text-4xl text-green-700 font-bold my-10">My Current Twitch Stream</h1>
+<!-- Embedded Twitch Stream -->
+<div id="twitch-embed"></div>
+<script src="https://embed.twitch.tv/embed/v1.js"></script>
+<script type="text/javascript">
+	new Twitch.Embed("twitch-embed", {
+		width: 854,
+		height: 480,
+		channel: "eoriont",
+	});
+</script>
