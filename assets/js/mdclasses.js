@@ -7,6 +7,13 @@ for (let e of headers) {
   }
 }
 
+var headers2 = markdownDiv.getElementsByTagName("h2");
+for (let e of headers2) {
+  if (e.classList.length == 0) {
+    e.classList.add("text-3xl", "font-bold", "text-green-700", "my-5");
+  }
+}
+
 var lists = markdownDiv.getElementsByTagName("ol");
 for (let e of lists) {
   if (e.classList.length == 0) {
