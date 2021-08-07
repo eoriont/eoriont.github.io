@@ -5,7 +5,7 @@ markdown: true
 
 # About me
 
-My name is oriont. I like to program random things, mostly games and utilities.
+My name is Elijah Tarr. I like to program random things, mostly games and utilities.
 I have way too many projects, but the one I am working on right now is an 8 bit CPU built on breadboards.
 I plan to make it run a couple games as a demonstration, where I can make an assembler and maybe even my own language to compile.
 
