@@ -27,9 +27,9 @@ I have a Windows 10 PC. That means that if you have a mac or linux PC, you shoul
 # TODO List
 
 (Prerequisites)
-1. Install Python
-2. Install PyPI
-3. Install visual C++ redistributable
+1. [Install Python 3.9.x](https://python.org)
+2. [Install PyPI](https://pip.pypa.io/en/stable/installation/)
+3. [Install visual C++ redistributable](https://support.microsoft.com/en-us/topic/the-latest-supported-visual-c-downloads-2647da03-1eea-4433-9aff-95f26a218cc0)
 
 (TODO)
 3. Install TensorFlow
@@ -76,7 +76,7 @@ If tensorflow adds support for more recent versions of the CUDA Toolkit, you can
 
 Once you run the installer, you should have some new files in the following directory: `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2`.
 
-Before, if you ran a tensorflow project, you may have recieved an error similar to the following:
+Before, if you ran a tensorflow project, you may have received an error similar to the following:
 ```
 2021-08-08 17:12:44.906857: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'cudart64_110.dll'; dlerror: cudart64_110.dll not found
 2021-08-08 17:12:44.906995: I tensorflow/stream_executor/cuda/cudart_stub.cc:29] Ignore above cudart dlerror if you do not have a GPU set up on your machine.
