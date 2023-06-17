@@ -1,0 +1,18 @@
+{
+  "name": "eoriont.github.io",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:eoriont/eoriont.github.io.git",
+  "author": "oriont <elijahotarr@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "autoprefixer": "^10.4.14",
+    "cssnano": "^6.0.1",
+    "postcss": "^8.4.24",
+    "tailwind-scrollbar": "^3.0.4",
+    "tailwindcss": "^3.3.2"
+  },
+  "dependencies": {
+    "postcss-import": "^15.1.0"
+  }
+}

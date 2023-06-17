@@ -1,52 +1,18 @@
 ---
-title: Welcome to oriont.net!
 ---
 
-<br>
-{% assign post = site.posts[0] %}
-<h1 class="text-4xl text-green-700 font-bold">Here is my latest post:</h1>
-{% include postcard.html title=post.title
-												 content=post.content
-												 url=post.url %}
+<h1>oriont.net <span>{% include dark_button.html %}</span></h1>
+<p>I'm Elijah Tarr, I like to make things!</p>
+<p>
+  <a class="link" href="/about">About</a>
+  <span> / </span>
+  <a class="link" href="/resume">Resume</a>
+</p>
 
-<div class="flex flex-col space-y-6">
-	<div>
-		<a class="text-green-500 text-2xl font-bold" href="//odraw.net">Link to ODraw</a>
-	</div>
-	<div>
-		<a class="text-green-500 text-2xl font-bold" href="/about">Go to my About Page</a>
-	</div>
-	<div>
-		<a class="text-green-500 text-2xl font-bold" href="/resume">View my Resume</a>
-	</div>
-</div>
+<h2>Posts</h2>
+{% for post in site.posts %}
+<p class="text-xl link">
+  <a href="{{ post.url }}"> {{ post.title }} </a>
+</p>
 
-
-<h1 class="text-4xl text-green-700 my-10 font-bold">Here are some links to my social media accounts:</h1>
-<div class="flex flex-col space-y-6">
-	<div>
-		<a class="text-green-500 text-2xl font-bold" href="//github.com/eoriont">GitHub</a>
-		<p>You can find all my projects here.</p>
-	</div>
-	<div>
-		<a class="text-green-500 text-2xl font-bold" href="//twitch.tv/eoriont">Twitch</a>
-		<p>Sometimes I stream myself coding my current projects. I don't have a set time, but if you follow me, you'll get notified when I go live!</p>
-	</div>
-	<div>
-		<a class="text-green-500 text-2xl font-bold" href="//www.youtube.com/channel/UCiydtLctNvtvO2ieS_A0eLQ">YouTube</a>
-		<p>Occasionally I post videos on youtube, but I prefer to post on my website.</p>
-	</div>
-</div>
-
-
-<!-- Embedded Twitch Stream -->
-<!-- <h1 class="text-4xl text-green-700 font-bold my-10">My Current Twitch Stream</h1>
-<div id="twitch-embed"></div>
-<script src="https://embed.twitch.tv/embed/v1.js"></script>
-<script type="text/javascript">
-	new Twitch.Embed("twitch-embed", {
-		width: 854,
-		height: 480,
-		channel: "eoriont",
-	});
-</script> -->
+{% endfor %}

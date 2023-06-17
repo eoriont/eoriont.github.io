@@ -4,8 +4,6 @@ tags: post machine-learning
 usemathjax: false
 ---
 
-# Datasets
-
 Datasets are the heart of any machine learning model.
 We use them to fine tune the model's parameters in order to make better predictions.
 
