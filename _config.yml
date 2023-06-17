@@ -44,8 +44,13 @@ markdown: kramdown
 highlighter: rouge
 
 sass:
+  load_paths:
+    - _sass
+    - node_modules
   sass_dir: _sass
   style: compressed
+
+include: ["node_modules/tailwindcss"]
 
 postcss:
   cache: false
