@@ -4,8 +4,7 @@ tags: post fat12
 usemathjax: true
 ---
 
-# What is FAT12?
-
+What is FAT12?
 FAT12 stands for File Allocation Tables, 12.
 It was introduced in 1977 (almost 50 years ago!) and has many descendents, such as FAT16, FAT32, and exFAT.
 It's a file system that was used in early computers, and is can likely be found on any floppy disk you come across.
@@ -26,11 +25,11 @@ However, all you really need to know about them is that they hold a sequence of 
 
 Computers are made in a way such that it's much easier to deal with 8, 16, 32, or 64 bits at a time.
 These are the most common, but most powers of 2 (greater than 64) are also common.
-A sequence of 8 bits is called a *byte*.
+A sequence of 8 bits is called a _byte_.
 The capacity of most computer-interfaceable storage devices are measured in bytes.
 For example, the computer you have might have 250 gigabytes of storage.
-As you might know already, *giga* means 1 billion, so you have *250 billion* bytes of memory at your disposal!
-The prefix *giga* comes from the orders of magnitude prefixes for SI units, which you can find at [this link][1].
+As you might know already, _giga_ means 1 billion, so you have _250 billion_ bytes of memory at your disposal!
+The prefix _giga_ comes from the orders of magnitude prefixes for SI units, which you can find at [this link][1].
 
 There is also another type of prefix, which is very similar to the SI prefixes, but it's in powers of 2.
 You can find a table for them [here][2], and notice how similar they are to the SI prefixes!
@@ -43,8 +42,8 @@ Generally, they are very similar, so it usually doesn't matter, but we'll be get
 
 It's kind of ambiguous when defining a partition of a disk, without using 'operating system', so I'll define it in the mathematical sense.
 Imagine you have a set of numbers $$\{1, 2, 3, 4, 5, 6, 7, 8, 9, 10\}$$.
-A partition of this set is a *set of sets* where the numbers contained in those inner sets aren't duplicated at all, and they make up the whole original set.
-For example, these *are* partitions of our original set:
+A partition of this set is a _set of sets_ where the numbers contained in those inner sets aren't duplicated at all, and they make up the whole original set.
+For example, these _are_ partitions of our original set:
 
 $$
 \{ \{1, 2\}, \{3, 4\}, \{5, 6\}, \{7, 8, 9, 10\} \} \\
@@ -52,7 +51,7 @@ $$
 \{ \{1, 2, 3, 4, 5, 6, 7, 8, 9, 10\} \}
 $$
 
-And these *are not* partitions of our original set:
+And these _are not_ partitions of our original set:
 
 $$
 \{ \{1, 2\}, \{3, 4\}, \{5, 6\} \} \\
@@ -61,11 +60,11 @@ $$
 
 The first one is missing numbers $$7-10$$ and the second one has an extra 7 and 2.
 Disk partitioning is very similar.
-We have a disk with x bytes on it, and we can *partition* it so that the first half and second half are different *partitions*.
+We have a disk with x bytes on it, and we can _partition_ it so that the first half and second half are different _partitions_.
 Notice how "partition" can be used as both a verb and a noun.
-Also notice how each partition (n) has *no overlapping* with other partitions, and the *sum of all partitions makes up for the whole disk space*.
+Also notice how each partition (n) has _no overlapping_ with other partitions, and the _sum of all partitions makes up for the whole disk space_.
 
-For the purposes of simplicity, I won't be using any file system partitioning, which is where partitions of the disk are used for *completely different filesystems.*
+For the purposes of simplicity, I won't be using any file system partitioning, which is where partitions of the disk are used for _completely different filesystems._
 We'll treat the disk like it's one big partition, and our filesystem will take up the whole partition.
 However, that's not to say we won't be using any partitioning!
 It's actually very important.
@@ -160,12 +159,14 @@ It indicates free space.
 In order to find _where_ on disk we should store our file, we need to find the first FAT entry that is free (AKA equal to 0)
 
 <!-- Image of first free FAT entry -->
+
 ![First Free FAT Entry](/assets/images/fat12_entries.png)
 
-The _index_ of this FAT entry is equal to the _index_ of a cluster in the *Data Section*.
+The _index_ of this FAT entry is equal to the _index_ of a cluster in the _Data Section_.
 This is the first cluster that we will use to store our data in.
 
 <!-- Image explaining this -->
+
 ![FAT Entries Clusters](/assets/images/fat12_entries_clusters.png)
 
 Now, let's imagine that our file is 100 bytes long.
@@ -176,12 +177,12 @@ Now, our entire file is stored in the data section.
 However, our computer will never know that a file is stored there, since we never updated the FAT!
 Remember, it's still set to 0, which means "this space is free!"
 
-The way we assign the FAT entry is by giving it the index of the *next* cluster of the file.
-BUT, since our file *only takes up 1 cluster*, we don't have anything to put here!
+The way we assign the FAT entry is by giving it the index of the _next_ cluster of the file.
+BUT, since our file _only takes up 1 cluster_, we don't have anything to put here!
 
 This is where another reserved value comes into play.
-A value of 0xFFF in hex will signify that this cluster is the *last cluster of the file*.
-Effectively, this signifies the *EOF*. (End Of File)
+A value of 0xFFF in hex will signify that this cluster is the _last cluster of the file_.
+Effectively, this signifies the _EOF_. (End Of File)
 
 So, we're done! That was pretty easy!
 Before I answer any other questions on how the computer may _find_ that file, let's try another one.
@@ -199,18 +200,20 @@ So, first we find the next free entry in the FAT. (Equal to 0)
 Then, we get the _index_ of that entry, and match it up with the cluster who has the same _index_.
 We store the first cluster of our data into this cluster that we just specified.
 Next, we would store something in the FAT entry.
-Remember, we store the *index of the _next_ entry* in the FAT.
+Remember, we store the _index of the *next* entry_ in the FAT.
 But, seeing as we don't have a _next_ entry yet, let's keep this current one in mind and move on.
 
 Now, we need to store the next cluster of our data.
 Let's find a new free FAT entry.
 
 <!-- Image of free entry -->
+
 ![First Free FAT Entry](/assets/images/fat12_entries.png)
 
 Now, let's find the cluster with the same _index_ of that entry!
 
 <!-- Image of free cluster -->
+
 ![Entry Cluster](/assets/images/fat12_entry_cluster.png)
 
 Now, we can store the _next_ cluster of our file in here.
@@ -219,11 +222,12 @@ And next, we need to fill up the FAT.
 Think back to last time: we now have that "next entry" ready!
 That "next entry" will just be the _index_ of the current cluster we're on.
 
-So, let's go back to the *old index*.
+So, let's go back to the _old index_.
 Last time, we wanted to store the _next index_, but we didn't get it yet, but now we have it!
-So, let's store the *current index* _in_ the *old index*.
+So, let's store the _current index_ _in_ the _old index_.
 
 <!-- Image of the FAT now -->
+
 ![Entry Cluster](/assets/images/fat12_entry_cluster_2.png)
 
 Phew, that was a lot of emphasized text! But, we aren't done!
@@ -234,14 +238,16 @@ So, let's find the next free FAT entry.
 Then, let's find the cluster with the same index as that FAT entry.
 Now, let's store bytes 1025-1536 (the 3rd cluster) in there. That's the last of our data!
 Last, don't forget to update the FAT table!
-So, let's store the *current index* _in_ the *old index*.
+So, let's store the _current index_ _in_ the _old index_.
 
 <!-- Image of the FAT now -->
+
 ![Entry Cluster](/assets/images/fat12_entry_cluster_3.png)
 
-And finally, since this is the last cluster of the file, let's store the special reserved *EOF* value in the *current index*.
+And finally, since this is the last cluster of the file, let's store the special reserved _EOF_ value in the _current index_.
 
 <!-- Image of the FAT now -->
+
 ![Entry Cluster](/assets/images/fat12_entry_cluster_4.png)
 
 ## To Generalize
@@ -251,10 +257,11 @@ If you got lost, I encourage you to read that second example again, and definite
 We can be generalize this method in a small algorithm.
 
 For each cluster in the file we want to store:
+
 1. Get the first free/empty FAT entry
-2. Store the current file cluster in the cluster *at the index of current FAT entry*
-3. Set *current* FAT entry to EOF (0xFFF)
-4. Set *previous* FAT entry to *index of current* FAT entry (if there _is_ a previous FAT entry)
+2. Store the current file cluster in the cluster _at the index of current FAT entry_
+3. Set _current_ FAT entry to EOF (0xFFF)
+4. Set _previous_ FAT entry to _index of current_ FAT entry (if there _is_ a previous FAT entry)
 
 Notice how I made step 3 set the current entry to EOF.
 This is actually a small shortcut that I just thought of, which makes it so that we don't have to check if the current cluster is the last cluster in the file, and also allows us to simplify our `find first free entry` algorithm.
@@ -271,7 +278,8 @@ When we come across a FAT entry that is equal to 0xFFF, we know that's the end o
 
 ## To Generalize:
 
-Until we reach an *EOF* entry:
+Until we reach an _EOF_ entry:
+
 1. Copy the cluster at the index of the current FAT entry into memory
 2. Set the current FAT entry to the one _stored_ in the current FAT entry
 
@@ -282,7 +290,7 @@ I don't know much about other filesystems, but even if I did, this would probabl
 
 Think about this from a larger standpoint.
 When we turn on our computer, how does it know which code to run?
-Well, we'd determine that if we were writing the *bootloader*.
+Well, we'd determine that if we were writing the _bootloader_.
 (Remember I mentioned that earlier for the reserved section?)
 We'd want a system of easily grouping files for easy access and organization.
 This is exactly what directories are for!
@@ -290,15 +298,15 @@ This is exactly what directories are for!
 Let's talk about directories for a second.
 As you may know already, a directory is like a manilla folder, if files were paper documents.
 It's just a way to group files.
-In the FAT systems, directories are actually stored *as* files!
+In the FAT systems, directories are actually stored _as_ files!
 This makes it a lot less complicated and more generalized.
-So, to read the file and find all of the clusters in the file, we'd read the FAT table *exactly the same way for any other file*.
+So, to read the file and find all of the clusters in the file, we'd read the FAT table _exactly the same way for any other file_.
 
 Imagine we performed the file read method on a directory.
 Now that we have the directory in memory, how do we find the files inside?
-Well, the directory file is just full of 32 byte *directory entries*.
+Well, the directory file is just full of 32 byte _directory entries_.
 If you have experience with pointers in C, each directory entry is like a pointer to the file, along with attributes.
-Every byte of the 32 bytes is used for something, including the filename, file extension, attributes, timestamps, the first cluster of the file, file size, and if this entry is actually a *subdirectory file*.
+Every byte of the 32 bytes is used for something, including the filename, file extension, attributes, timestamps, the first cluster of the file, file size, and if this entry is actually a _subdirectory file_.
 If you want to see exactly which bytes are used for what, [I recommend you look at page 5 of this document][6].
 In fact, read the whole thing!
 It was one of the documents _I_ used to learn FAT12.
@@ -309,7 +317,7 @@ In FAT32, the max file size _is_ 4 GB, so eventually we can take advantage of al
 
 ## Anyway
 
-To get all the files in a directory, we split it into 32 bit *directory entries*.
+To get all the files in a directory, we split it into 32 bit _directory entries_.
 The file name is the first 11 bytes, and the first cluster of the file is in bytes 26-27.
 Notice the first cluster is 2 bytes long, even though FAT entries are only 1.5 bytes long.
 In FAT12, the last 4 bits of those 2 bytes are just never used.
@@ -322,23 +330,24 @@ Also very simple!
 Generally, the root directory is 14 sectors long.
 Again, this is configurable in the BPB (Bios Parameter Block), but for the purposes of convention, we'll keep it at 14.
 Since each directory entry is 32 bytes long, and each sector is 512 bytes long, there can be 16 entries per sector.
-The root directory has 14 sectors * 16 entries per sector, which is 224 entries.
+The root directory has 14 sectors \* 16 entries per sector, which is 224 entries.
 
 Notice how I was talking in terms of sectors and not clusters.
 This is because in FAT12, the root directory is kind of awkward.
-*It's not actually in the data section*.
-It's located right after the FAT section, and right *before* the data section.
+_It's not actually in the data section_.
+It's located right after the FAT section, and right _before_ the data section.
 
 <!-- Picture of that -->
+
 ![FAT12 Sections](/assets/images/fat12_sections.png)
 
 So, as you can see, reading the root directory will be _slightly_ different than reading any other directory.
 In reality, getting stuff from the root directory is actually slightly easier.
 For one, it's always 14 sectors long, and it's always in a specific location (right after the FAT section), so there's no need to read the FAT table.
 But, since it's not in the data section, we'll need to calculate the sector number slightly differently.
-(We'd just *not* add the 14 sectors in the root directory, like we would for the data section, since it's located *after* the root directory.)
+(We'd just _not_ add the 14 sectors in the root directory, like we would for the data section, since it's located _after_ the root directory.)
 
-Having a root directory in a constant place allows us to structure *all of our files* in a consistantly locatable tree.
+Having a root directory in a constant place allows us to structure _all of our files_ in a consistantly locatable tree.
 What I mean by this, is that we can make subdirectories in the root directory and store files in there, which emulates a tree structure.
 This allows us to traverse the tree to find a file at a specific path!
 That's useful for loading system code files into memory to run, which will allow us to build even more tools to explore the files.
@@ -359,7 +368,6 @@ If you are interested in it's progress, you can [check out its GitHub page here]
 If you spotted an error in this post, or have something that you'd like to add, please make a github issue or pull request, as linked to in the footer.
 
 Thanks for reading!
-
 
 [1]: https://www.thermofisher.com/us/en/home/references/ambion-tech-support/rna-tools-and-calculators/orders-of-magnitude-prefixes-for-si-units.html
 [2]: https://en.wikipedia.org/wiki/Byte#Multiple-byte_units

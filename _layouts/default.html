@@ -1,58 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
+  {% include head_section.html %}
 
-{% include head_section.html %}
-
-<body class="bg-gray-100 leading-normal tracking-normal">
-
-	{% include newnav.html %}
-
-	<!--Container-->
-	<div class="container w-full md:max-w-3xl mx-auto pt-20">
-
-		<div class="w-full px-4 md:px-6 text-xl text-gray-800 leading-normal" style="font-family: Georgia, serif;">
-
-			<!--Title-->
-			<div class="">
-        {% if page.tags contains "post" %}
-          <p class="text-base md:text-sm text-green-500 font-bold">&lt; <a href="/posts" class="text-base md:text-sm text-green-500 font-bold no-underline hover:underline">Back to posts</a></p>
+  <body class="dark:bg-zinc-800">
+    <div class="container w-full md:max-w-3xl mx-auto pt-20">
+      <div
+        class="w-full px-4 md:px-6 text-xl text-gray-800 leading-normal"
+        style="font-family: Georgia, serif"
+      >
+        {% if page.name != "index.html" %}
+        <div class="flex">
+          <p class="my-auto p-0"><a href="/" class="link pr-5">Home</a></p>
+          {% include dark_button.html %}
+        </div>
         {% endif %}
-        <h1 class="font-bold break-normal text-gray-900 pt-6 pb-2 text-3xl md:text-4xl">{{ page.title }}</h1>
+        <h1 class="pt-6 text-3xl md:text-4xl">{{ page.title }}</h1>
         {% if page.tags contains "post" %}
-          <p class="text-sm md:text-base font-normal text-gray-600">Published {{ page.date | date: "%-d %B %Y" }}</p>
-          <br>
+        <p class="md:text-base font-normal text-gray-600 dark:text-gray-400">
+          {{ page.date | date: "%Y-%m-%d" }}
+        </p>
         {% endif %}
-			</div>
 
+        <div id="markdown">{{ content }}</div>
 
-			<!--Post Content-->
-
-      <div id="markdown">
-        {{ content }}
+        <footer class="text-slate-400 pt-10 pb-7">
+          <a class="link" href="/">Home</a> -
+          <a class="link" href="/about">About</a> -
+          <a class="link" href="/resume">Resume</a>
+          <br />
+          Copyright © 2023 - Elijah Tarr
+        </footer>
       </div>
-
-			<!-- / Post Content -->
-
-		</div>
-
-    <br>
-
-    {% if page.tags contains 'post' %}
-      {% include postjargon.html %}
-    {% endif %}
-
-	</div>
-	<!--/container-->
-
-	{% include newfooter.html %}
-
-	<script src="/assets/js/progressbar.js"></script>
-
-  <!-- Assumes that posts have at least 1 tag -->
-  {% if page.tags.size > 0 or page.markdown %}
-    <script src="/assets/js/mdclasses.js"></script>
-  {% endif %}
-
-</body>
-
+    </div>
+  </body>
 </html>

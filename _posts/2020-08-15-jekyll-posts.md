@@ -3,9 +3,7 @@ title: Removing the date from jekyll posts
 tags: post jekyll
 ---
 
-# Quick answer
-
-Edit your `_config.yml` file, and add this singular line:
+Quick answer: edit your `_config.yml` file, and add this singular line:
 
 ```yml
 permalink: /posts/:title

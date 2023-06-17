@@ -4,8 +4,6 @@ tags: post machine-learning
 usemathjax: false
 ---
 
-# What This Post Is
-
 I was working with tensorflow to make my GAN recently, but I noticed a couple things.
 First, each epoch in training would take around 5 minutes, which is extremely slow.
 For my goal of 100 epochs, it would take 500 minutes, which turns out to be over 8 hours.
@@ -27,19 +25,17 @@ I have a Windows 10 PC. That means that if you have a mac or linux PC, you shoul
 # TODO List
 
 (Prerequisites)
+
 1. [Install Python 3.9.x](https://python.org)
 2. [Install PyPI](https://pip.pypa.io/en/stable/installation/)
 3. [Install visual C++ redistributable](https://support.microsoft.com/en-us/topic/the-latest-supported-visual-c-downloads-2647da03-1eea-4433-9aff-95f26a218cc0)
 
-(TODO)
-3. Install TensorFlow
-4. Install NVidia Drivers
-5. Install CUDA Toolkit
-6. Install CUDNN
+(TODO) 3. Install TensorFlow 4. Install NVidia Drivers 5. Install CUDA Toolkit 6. Install CUDNN
 
 # Install TensorFlow
 
 In a command prompt:
+
 ```
 pip install --upgrade pip
 pip install tensorflow
@@ -47,16 +43,18 @@ pip install tensorflow
 
 This just upgrades `pip` and installs the `tensorflow` package.
 If you want to install a specific version, use the following syntax:
+
 ```
 pip install tensorflow==2.6.0rc2
 ```
 
 (If you want a list of versions, just use an unknown version and `pip` should tell you.)
+
 ```
 pip i tensorflow==chicken
 ```
 
-Since TensorFlow and CUDA are so picky about their versions, here is the version I used when I got it working: *2.6.0rc2*.
+Since TensorFlow and CUDA are so picky about their versions, here is the version I used when I got it working: _2.6.0rc2_.
 
 # Install NVidia Drivers
 
@@ -70,13 +68,14 @@ I recommend downloading GeForce experience, so you can keep your drivers updated
 [You can find a list of all the different versions of the CUDA toolkit here.](https://developer.nvidia.com/cuda-toolkit-archive)
 
 You're probably wondering which version to install.
-For my build, I installed *CUDA Toolkit 11.2.2*.
+For my build, I installed _CUDA Toolkit 11.2.2_.
 
 If tensorflow adds support for more recent versions of the CUDA Toolkit, you can try installing them for increased performance or new features.
 
 Once you run the installer, you should have some new files in the following directory: `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2`.
 
 Before, if you ran a tensorflow project, you may have received an error similar to the following:
+
 ```
 2021-08-08 17:12:44.906857: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'cudart64_110.dll'; dlerror: cudart64_110.dll not found
 2021-08-08 17:12:44.906995: I tensorflow/stream_executor/cuda/cudart_stub.cc:29] Ignore above cudart dlerror if you do not have a GPU set up on your machine.
@@ -99,12 +98,13 @@ So, open the system environment variables by going to the start menu and searchi
 Then, find the `Path` variable, select it, and click "edit".
 From there, you can click "New" to add a new directory to the path, and the directory you want to add is the directory containing all the missing libraries, aka `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin`
 
-Then, close out of the environment variables page, *making sure to apply your changes*.
-Lastly, *RESTART all your currently open terminals. This is because the changes will not take place unless the terminal was created after you added the new path directory.*
+Then, close out of the environment variables page, _making sure to apply your changes_.
+Lastly, _RESTART all your currently open terminals. This is because the changes will not take place unless the terminal was created after you added the new path directory._
 
 # Install CUDNN
 
 Now, you may get an error similar to this:
+
 ```
 2021-08-08 17:20:10.558894: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'cudnn64_8.dll'; dlerror: cudnn64_8.dll not found
 2021-08-08 17:20:10.559029: W tensorflow/core/common_runtime/gpu/gpu_device.cc:1835] Cannot dlopen some GPU libraries. Please make sure the missing libraries mentioned above are installed properly if you would like to use GPU. Follow the guide at https://www.tensorflow.org/install/gpu for how to download and setup the required libraries for your platform.
@@ -116,18 +116,20 @@ Now, it's only missing one cuda dll, an it's from CUDNN.
 
 NOTE: The site will prompt you to create an NVidia account and get a "Developer Program Membership".
 Don't worry, this is super easy.
+
 1. Create an account. (Or log in with google, or something)
 2. Verify your email
-3. Fill out your profile information. *Make sure to click the checkbox stating "Join the NVIDIA Developer Program to access downloads (like cuDNN), how-to videos, and more."*
+3. Fill out your profile information. _Make sure to click the checkbox stating "Join the NVIDIA Developer Program to access downloads (like cuDNN), how-to videos, and more."_
 
 Now, you can go to the downloads page and download cuDNN.
-The version that I got (which worked) is *v8.2.2 for CUDA 11.4*.
+The version that I got (which worked) is _v8.2.2 for CUDA 11.4_.
 I know, I didn't get CUDA Toolkit 11.4 (I got 11.2.2).
 But, it still ended up working anyway!
 If you want to match versions, please, feel free.
 
 Once you downloaded the folder and extracted it into a new folder, place that folder somewhere it'll be safe.
 I just put it next to the CUDA toolkit, so my directory structure looked like this:
+
 ```
 ...
 NVIDIA GPU Computing Toolkit

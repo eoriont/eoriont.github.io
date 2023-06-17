@@ -1,0 +1,35 @@
+---
+---
+
+@import "assets/css/vs.css";
+@import "assets/css/zenburn.css" screen and (prefers-color-scheme: dark);
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  h1 {
+    @apply text-2xl break-normal text-gray-900 dark:text-gray-300 pt-6 pb-2 md:text-3xl;
+  }
+  h2 {
+    @apply text-xl break-normal text-gray-900 dark:text-gray-300 pt-6 pb-2 md:text-2xl;
+  }
+  p, li {
+    @apply pt-1 pb-2 text-lg text-gray-800 dark:text-gray-300;
+  }
+  .link {
+    @apply text-sky-800 decoration-sky-800 dark:text-sky-300 dark:decoration-sky-300 hover:underline no-underline;
+  }
+  a {
+    @apply link;
+  }
+}
+
+.highlighter-rouge {
+  @apply bg-zinc-100 overflow-x-auto text-lg dark:bg-[#383838] scrollbar-thin dark:scrollbar-track-zinc-900 dark:scrollbar-thumb-zinc-700 scrollbar-track-zinc-200 scrollbar-thumb-zinc-400;
+}
+
+.katex-display {
+  @apply dark:text-gray-300;
+}

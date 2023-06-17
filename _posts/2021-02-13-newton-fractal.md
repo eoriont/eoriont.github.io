@@ -4,9 +4,7 @@ tags: post newtonfractal
 usemathjax: true
 ---
 
-# Long Story Short
-
-If you want to see the end product, then click on the following link:
+Long story short: if you want to see the end product, then click on the following link:
 
 [https://oriont.net/newtonfractal](https://oriont.net/newtonfractal)
 
@@ -19,7 +17,7 @@ I used all the same methods I used in this new version, except the technologies 
 
 # What's Newton's Method?
 
-Newton's method is a way of *approximating* the roots of a function.
+Newton's method is a way of _approximating_ the roots of a function.
 For example, given the function $$f(x) = x^2 - 1$$, the seasoned mathmatician would be able to tell you that the roots are $$1$$ and $$-1$$.
 They'd be correct, but how did they get there?
 
@@ -41,9 +39,9 @@ What do I mean by this? Well, take a look at the following graph, which has 3 re
 
 ![Image of Graph](/assets/images/newtonfractal_graph.png)
 
-Now, take any arbitrary point (the further away from for the local minima/maxima, the better. I'll get to that in a bit.) Now, visualize the tangent line of that point. That tangent line will have a positive slope (pointing up-right) or a negative slope (pointing down-left). Now, take a look at the closest zero. You might notice, that *usually*, the zero of the tangent line is closer to the actual zero, than $$(x, 0)$$, (x being the x coordinate of your arbitrary point). Why is this?
+Now, take any arbitrary point (the further away from for the local minima/maxima, the better. I'll get to that in a bit.) Now, visualize the tangent line of that point. That tangent line will have a positive slope (pointing up-right) or a negative slope (pointing down-left). Now, take a look at the closest zero. You might notice, that _usually_, the zero of the tangent line is closer to the actual zero, than $$(x, 0)$$, (x being the x coordinate of your arbitrary point). Why is this?
 
-Well, it's because the tangent line can be thought as an *approximation* of the complicated line. When we are talking about approximations, *pretty much anything* can be an approximation of *pretty much anything else*. (That's not to say that they are *good* approximations). We can treat it as an approximation because it has a zero, which is what we're looking for.
+Well, it's because the tangent line can be thought as an _approximation_ of the complicated line. When we are talking about approximations, _pretty much anything_ can be an approximation of _pretty much anything else_. (That's not to say that they are _good_ approximations). We can treat it as an approximation because it has a zero, which is what we're looking for.
 
 Now, this approximation (tangent) line that we have, will give us our approximated zero! Since the equation of the tangent line can be modeled (in point-slope form) as:
 
@@ -53,25 +51,34 @@ $$,
 
 Where $$(x_1, f(x_1))$$ is the point of intersection, and $$m$$ is the slope (aka derivative) of the line, we can model the *actual* tangent line as:
 
+
 $$
+
 y - f(x_1) = f'(x_1) (x - x_1)
+
 $$
 
 Now, let's solve for the y intercept. The y intercept is a point on the line where $$y=0$$, so we can set $$y=0$$ and solve for x. We don't set $$f(x_1)$$ to zero, because that's the thing we're trying to get closer to zero! (If we could just set $$f(x_1)$$ to zero, it'd be the same as finding the *actual* zeros, meaning we go back to the quartic functions or mega factoring or some other method.)
 
 We have:
 
+
 $$
+
 y = 0 \\
 0 - f(x_1) = f'(x_1) (x - x_1) \\
 -\dfrac{f(x_1)}{f'(x_1)} = x - x_1 \\
 x = x_1 - \dfrac{f(x_1)}{f'(x_1)} \\
+
 $$
 
 Now, we have an approximation for the y-intercept! It's modeled as:
 
+
 $$
+
 (x_1 - \dfrac{f(x_1)}{f'(x_1)}, 0)
+
 $$
 
 Coming from $$(x, y)$$, where $$x$$ is what we just derived, and $$y=0$$, which was the assumption that we made in order to derive it.
@@ -80,16 +87,22 @@ Now what? We have an approximation of the y-intercept, but what if it's bad? Wha
 
 First, let's make an equation for the y-intercept approximation, since we're going to be reusing it.
 
+
 $$
-x_{n+1} = x_n - \dfrac{f(x_n)}{f'(x_n)}
+
+x\_{n+1} = x_n - \dfrac{f(x_n)}{f'(x_n)}
+
 $$
 
 I use the expression we got as the y-intercept approximation, except instead of $$x_1$$, I use $$x_n$$, since we are performing this operation more than once. And I set it equal to $$x_{n+1}$$ since it'll be used to make the *next* approximation.
 
 To get the starting point, let's use the x value as the approximation, which then allows us to get the y value using $$f(x)$$. So, our next starting point is: $$(x_2, f(x_1))$$. Running the whole approximation process again, we get:
 
+
 $$
+
 (x_3, f(x_2))
+
 $$
 
 Where $$x_3$$ is the new approximated y-intercept, calculated using $$x_{n+1}$$, or in this case, $$x_{2+1}$$. You might be able to see where this is going. Doing this process infinitely many times will *theoretically* give you the correct y-intercept for a function! But, it can only give *one* y-intercept at a time.
@@ -98,8 +111,11 @@ Notice, if you start at a different point on the graph, the process might conver
 
 To give it a formal definition, let $$f(x)$$ be a differentiable function, and $$(x_0, f(x_0))$$ is an arbitrary starting point. Use the following function:
 
+
 $$
-x_{n+1} = x_n - \dfrac{f(x_n)}{f'(x_n)}
+
+x\_{n+1} = x_n - \dfrac{f(x_n)}{f'(x_n)}
+
 $$
 
 to approximate a root. Higher values of $$n$$ will yield better approximations of the root.
@@ -114,21 +130,27 @@ You'll notice, the tangent line is almost horizontal, meaning the y-intercept's 
 
 If we were to start *on* the critical point, however, newton's method would diverge. This is because the slope is 0, meaning the next point would be:
 
+
 $$
+
 x_1 = x_n - \dfrac{f(x_n)}{f'(x_n)} \\
 = x_n - \dfrac{f(x_n)}{0} \\
 = - \infty
+
 $$
 
 This is one example of newton's method diverging.
 
 Some functions aren't friendly with newton's method. Take, for example,
 
+
 $$
+
 f(x) = \begin{cases}
-  \sqrt{x}, \quad \text{for} x \geq 0 \\
-  -\sqrt{-x}, \quad \text{for} x < 0 \\
+\sqrt{x}, \quad \text{for} x \geq 0 \\
+-\sqrt{-x}, \quad \text{for} x < 0 \\
 \end{cases}
+
 $$
 
 ![Graph of Cases](/assets/images/newtonfractal_graph3.png)
@@ -254,12 +276,15 @@ Complex numbers can be written as $$a + bi$$, where $$a$$ is the real part, and 
 
 The cool thing with the complex plane is that you can do operations on each point, and you can get different points in return. For example, if we square the point graphed above, we will get a different point. However, squaring a point isn't as easy as squaring the a and b values separately. Like binomials, we must use the distributive property when multiplying. So, we have:
 
+
 $$
+
 (5 + 6i)^2 \\
 = (5 + 6i)(5 + 6i) \\
 = 25 + 30i + 30i + 36i^2 \\
 = 25 + 60i - 36 \\
 = -11 + 60i
+
 $$
 
 Notice how when we squared $$i$$, we got $$-1$$. That's just a consequence of the identity discussed earlier. $$i^2 = -1$$. Now, our point can be graphed as so:
@@ -268,7 +293,9 @@ Notice how when we squared $$i$$, we got $$-1$$. That's just a consequence of th
 
 I also mentioned earlier that we can use newton's method on complex functions. For example, take the function $$f(z) = z^3 + 1$$. Just so we can check our answers, let's solve for the roots first. We have:
 
+
 $$
+
 0 = z^3 + 1 \\
 = (z+1)(z^2-z+1) \\
 z+1 = 0 \\
@@ -276,17 +303,20 @@ z = -1 \\
 z^2 - z + 1 = 0 \\
 (z-\dfrac{1}{2})^2 + \dfrac{3}{4} = 0 \\
 z = \dfrac{1}{2} \pm \dfrac{\sqrt3}{2} i \\
+
 $$
 
 Now that we know the roots, let's use newton's method. We'll start at, say, $$z_0=2$$. We have:
 
+
 $$
+
 f(z) = z^3 + 1 \\
 f'(z) = 3z^2 \\
-z_0 = 2 \\
-z_{n+1} = z_n - \dfrac{f(z)}{f'(z)} \\
+z*0 = 2 \\
+z*{n+1} = z_n - \dfrac{f(z)}{f'(z)} \\
 z_1 = z_0 - \dfrac{z_0^3 - 1}{3z_0^2} \\
-z_1 = 2 - \dfrac{2^3-1}{3 \dot 2^2}  \\
+z_1 = 2 - \dfrac{2^3-1}{3 \dot 2^2} \\
 \approx 1.3 + 0.72i \\
 z_2 \approx 0.78 + 0.61i \\
 z_3 \approx 0.44 + 0.74i \\
@@ -294,6 +324,7 @@ z_4 \approx 0.51 + 0.89i \\
 z_5 \approx 0.50 + 0.86i \\
 z_6 \approx 0.50 + 0.86i \\
 z_7 \approx 0.50 + 0.86i \\
+
 $$
 
 Towards the end, I stopped showing the process, but I just did the same thing over and over again. Using this method, we can approximate the root, starting at any point on the complex plane! (Except, of course, the critical points of the function, one of which happens to be at $$z=0 + 0i$$, since $$3z^2 = 0$$)
@@ -346,38 +377,52 @@ As you can see, we never get the answer we want! We always get `NaN`, which stan
 
 Writing them should be easy, we just need to figure out how each complex operation affects the real and imaginary parts of the variable. Let's start with complex subtraction:
 
+
 $$
+
 (a + bi) - (c + di) \\
 a + bi - c - di \\
 (a - c) + (b - d)i \\
+
 $$
 
 Similarly, addition can be proved as so:
 
+
 $$
+
 (a + bi) + (c + di) \\
 a + bi + c + di \\
 (a + c) + (b + d)i \\
+
 $$
 
 Okay, those were simple. We just use the distributive property on the minus/plus, and group up the real and imaginary parts. What about multiplication and division?
 
+
 $$
+
 (a + bi) (c + di) \\
 ac + adi + bci + bdi^2 \\
 ac + adi + bci - bd \\
 (ac - bd) + (ad + bc)i \\
-$$
 
 $$
+
+
+$$
+
 \dfrac{(a+bi)}{(c+di)} \\
 \dfrac{(a+bi)(c-di)}{(c+di)(c-di)} \\
 \dfrac{(ac+bd) + (bc - ad)}{c^2 + d^2} \\
+
 $$
 
 Multiplication was also relatively easy, I just used the distributive property to multiply the binomials, I used the imaginary identity, and last I just grouped up the numbers again according to their "imaginary-ness". This last one, complex exponents, is probably the most interesting, as it makes use of [Euler's formula](https://en.wikipedia.org/wiki/Euler%27s_formula), and the polar form of complex numbers. [Blackpenredpen has a great video on this proof](https://www.youtube.com/watch?v=Z4PsLt9_ky8)
 
+
 $$
+
 (a + bi)^{(c + di)} \\
 = (re^{i \theta})^{c+di} \\
 r = \sqrt{a^2 + b^2} \\
@@ -389,6 +434,7 @@ y = c \theta + d \ln r \\
 \theta = r^c e^{-d \theta} (\text{cos} (y) + i \text{sin}(y) \\
 x =r^c e^{-d \theta} \\
 = x \text{cos} y + (x \text{sin} y) i \\
+
 $$
 
 Now, we can easily convert these formulas into code using lambda functions:
@@ -525,3 +571,4 @@ Some time in the future, I will get around to making them, but for now, enjoy th
 ![Fractal 4](/assets/images/newtonfractal_fractal4.png)
 ![Fractal 5](/assets/images/newtonfractal_fractal5.png)
 ![Fractal 6](/assets/images/newtonfractal_fractal6.png)
+$$

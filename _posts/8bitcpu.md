@@ -4,6 +4,7 @@ title: "8 Bit CPU"
 subtitle: "A.K.A the ORION-1"
 description: "An 8 bit CPU made from scratch"
 date: "August 3, 2020"
+layout: new
 ---
 
 # What is it?
