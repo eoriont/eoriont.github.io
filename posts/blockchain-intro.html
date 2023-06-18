@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Introduction to Blockchains</title>
+  <meta name="author" content="Elijah Tarr" />
+  <meta name="description" content="oriont's posts" />
+  <meta name="keywords" content="coding,programming" />
+
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <script>
+    if (
+      localStorage.getItem("color-theme") === "dark" ||
+      (!("color-theme" in localStorage) &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches)
+    ) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  </script>
+
+  
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script
+    async
+    src="https://www.googletagmanager.com/gtag/js?id=G-YW05BX01LE"
+  ></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
+
+    gtag("config", "G-YW05BX01LE");
+  </script>
+</head>
+
+
+  <body class="dark:bg-zinc-800">
+    <div class="container w-full md:max-w-3xl mx-auto pt-2 md:pt-10">
+      <div
+        class="w-full px-4 md:px-6 text-xl text-gray-800 leading-normal"
+        style="font-family: Georgia, serif"
+      >
+        
+        <div class="flex pt-2">
+          <p class="my-auto p-0"><a href="/" class="link pr-5">Home</a></p>
+          <button
+  id="theme-toggle"
+  type="button"
+  class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5"
+>
+  <svg
+    id="theme-toggle-light-icon"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke-width="1.5"
+    stroke="currentColor"
+    class="w-6 h-6 hidden"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"
+    />
+  </svg>
+
+  <svg
+    id="theme-toggle-dark-icon"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke-width="1.5"
+    stroke="currentColor"
+    class="w-6 h-6 hidden"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"
+    />
+  </svg>
+</button>
+
+<script>
+  var themeToggleDarkIcon = document.getElementById("theme-toggle-dark-icon");
+  var themeToggleLightIcon = document.getElementById("theme-toggle-light-icon");
+
+  // Change the icons inside the button based on previous settings
+  if (
+    localStorage.getItem("color-theme") === "dark" ||
+    (!("color-theme" in localStorage) &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches)
+  ) {
+    themeToggleLightIcon.classList.remove("hidden");
+  } else {
+    themeToggleDarkIcon.classList.remove("hidden");
+  }
+
+  var themeToggleBtn = document.getElementById("theme-toggle");
+
+  themeToggleBtn.addEventListener("click", function () {
+    // toggle icons inside button
+    themeToggleDarkIcon.classList.toggle("hidden");
+    themeToggleLightIcon.classList.toggle("hidden");
+
+    // if set via local storage previously
+    if (localStorage.getItem("color-theme")) {
+      if (localStorage.getItem("color-theme") === "light") {
+        document.documentElement.classList.add("dark");
+        localStorage.setItem("color-theme", "dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+        localStorage.setItem("color-theme", "light");
+      }
+
+      // if NOT set via local storage previously
+    } else {
+      if (document.documentElement.classList.contains("dark")) {
+        document.documentElement.classList.remove("dark");
+        localStorage.setItem("color-theme", "light");
+      } else {
+        document.documentElement.classList.add("dark");
+        localStorage.setItem("color-theme", "dark");
+      }
+    }
+  });
+</script>
+
+        </div>
+         
+        <h1 class="pt-3 md:pt-6 text-3xl md:text-4xl">Introduction to Blockchains</h1>
+         
+        <p class="md:text-base font-normal text-gray-600 dark:text-gray-400">
+          2022-02-05
+        </p>
+        
+
+        <div id="markdown"><h1 id="introduction">Introduction</h1>
+
+<p>Web 1.0 was based on static html pages on websites (kind of like this blog).
+Web 2.0 is based on more dynamic structures, allowing for the creation of new pages and manipulation of data on the website.
+Web 3.0 is based on decentralization–what better tool to advance this technology than blockchain?</p>
+
+<p>For example, say you store all your photos on your computer.
+If someone breaks into your house and steals your computer, then your photos are gone.
+Or, if your computer catches on fire somehow, your photos are gone.
+Or, if you accidentally delete your photos permanently, then your photos are gone.
+The point is that there are many ways for a single system to fail, and if your application is centralized, failing will have dire consequences.</p>
+
+<p>With a decentralized system, your photos would be stored across hundreds (or thousands!) of computers.
+This way, if something happened to your computer, your photos wouldn’t be gone forever.
+You could just ask someone else in the network (who has a working computer) for them!</p>
+
+<p>Of course, this wouldn’t work if every single computer in the network was broken; there would be no one to ask.
+However, such a catastrophe is very unlikely to happen; decentralized networks incentivize network “nodes” to stay online.
+This incentive depends on the network you are using: bitcoin, ethereum, solana, arweave, etc.</p>
+
+<h1 id="how-do-you-make-a-decentralized-network">How do you make a decentralized network?</h1>
+
+<p>Decentralized networks work because they can synchronize one state across many nodes.
+The “state” can be thought of as all the data that is stored on the blockchain at a point in time.
+So, how can we synchronize state?</p>
+
+<p>Let’s use an example:
+Fred and his friends want to make a decentralized network.
+They decide to manually do all operations.
+Fred decides to put some text on the network: “bananafdjskal;”
+Obviously, there is a typo–Fred meant to type “banana”.
+Before he noticed his typo, he told all his friends to put “bananafdjskal;” onto their network.
+Now, the network state looks like this:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Fred's essay: "bananafdjskal;"
+</code></pre></div></div>
+
+<p>Fred decides to fix his typo.
+He tells all his friends to replace his word with “banana”.
+Now, the state looks like this:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Fred's essay: "banana"
+</code></pre></div></div>
+
+<p>Fred and his friends have just successfully made a decentralized network!
+But, we haven’t tested any of the problems…</p>
+
+<h1 id="common-problems">Common Problems</h1>
+
+<p>Imagine Caroline tries to edit Fred’s essay.
+We don’t want Caroline to be able to edit Fred’s essay, because Fred is the one writing it, not Caroline!
+So, in order for a change to be made, we have to confirm the person making the change is the person who owns the essay.
+A common way to do this is to use a signature.
+When you buy something at a store with a credit card, you have to put in a pin or sign your name.
+Whenever Fred wants</p>
+
+<p>UNFINISHED!</p>
+</div>
+
+        <footer class="text-slate-400 pt-10 pb-7">
+          <a class="link" href="/">Home</a> -
+          <a class="link" href="/about">About</a> -
+          <a class="link" href="/resume">Resume</a> -
+          <a class="link" href="/games">Games</a>
+          <br />
+          Copyright © 2023 - Elijah Tarr
+        </footer>
+      </div>
+    </div>
+  </body>
+</html>

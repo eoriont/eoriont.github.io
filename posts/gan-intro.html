@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Basic Introduction to Generative Adversarial Networks (GANs)</title>
+  <meta name="author" content="Elijah Tarr" />
+  <meta name="description" content="oriont's posts" />
+  <meta name="keywords" content="coding,programming" />
+
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <script>
+    if (
+      localStorage.getItem("color-theme") === "dark" ||
+      (!("color-theme" in localStorage) &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches)
+    ) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  </script>
+
+  
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script
+    async
+    src="https://www.googletagmanager.com/gtag/js?id=G-YW05BX01LE"
+  ></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
+
+    gtag("config", "G-YW05BX01LE");
+  </script>
+</head>
+
+
+  <body class="dark:bg-zinc-800">
+    <div class="container w-full md:max-w-3xl mx-auto pt-2 md:pt-10">
+      <div
+        class="w-full px-4 md:px-6 text-xl text-gray-800 leading-normal"
+        style="font-family: Georgia, serif"
+      >
+        
+        <div class="flex pt-2">
+          <p class="my-auto p-0"><a href="/" class="link pr-5">Home</a></p>
+          <button
+  id="theme-toggle"
+  type="button"
+  class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5"
+>
+  <svg
+    id="theme-toggle-light-icon"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke-width="1.5"
+    stroke="currentColor"
+    class="w-6 h-6 hidden"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"
+    />
+  </svg>
+
+  <svg
+    id="theme-toggle-dark-icon"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke-width="1.5"
+    stroke="currentColor"
+    class="w-6 h-6 hidden"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"
+    />
+  </svg>
+</button>
+
+<script>
+  var themeToggleDarkIcon = document.getElementById("theme-toggle-dark-icon");
+  var themeToggleLightIcon = document.getElementById("theme-toggle-light-icon");
+
+  // Change the icons inside the button based on previous settings
+  if (
+    localStorage.getItem("color-theme") === "dark" ||
+    (!("color-theme" in localStorage) &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches)
+  ) {
+    themeToggleLightIcon.classList.remove("hidden");
+  } else {
+    themeToggleDarkIcon.classList.remove("hidden");
+  }
+
+  var themeToggleBtn = document.getElementById("theme-toggle");
+
+  themeToggleBtn.addEventListener("click", function () {
+    // toggle icons inside button
+    themeToggleDarkIcon.classList.toggle("hidden");
+    themeToggleLightIcon.classList.toggle("hidden");
+
+    // if set via local storage previously
+    if (localStorage.getItem("color-theme")) {
+      if (localStorage.getItem("color-theme") === "light") {
+        document.documentElement.classList.add("dark");
+        localStorage.setItem("color-theme", "dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+        localStorage.setItem("color-theme", "light");
+      }
+
+      // if NOT set via local storage previously
+    } else {
+      if (document.documentElement.classList.contains("dark")) {
+        document.documentElement.classList.remove("dark");
+        localStorage.setItem("color-theme", "light");
+      } else {
+        document.documentElement.classList.add("dark");
+        localStorage.setItem("color-theme", "dark");
+      }
+    }
+  });
+</script>
+
+        </div>
+         
+        <h1 class="pt-3 md:pt-6 text-3xl md:text-4xl">Basic Introduction to Generative Adversarial Networks (GANs)</h1>
+         
+        <p class="md:text-base font-normal text-gray-600 dark:text-gray-400">
+          2021-08-01
+        </p>
+        
+
+        <div id="markdown"><p>What is a neural network? You may have heard of neural networks before, and you may know that they mimic brains.
+Many people’s knowledge on neural networks falters after that.
+However, I’m here to provide a basic overview of what they are, and how they work.</p>
+
+<p>A Neural Network, (or NN for short) is a model of how a brain could theoretically work.
+I say model, because NNs are just complex structures made out of a bunch of tiny little parts.
+In a real brain, these parts would be the neurons, and scientists have decided to name it the same thing in our model.
+A NN is just a bunch of neurons connected to eachother.</p>
+
+<p>Now, being modeled on the computer and restrained by the digital nature of silicon logic, it would take a lot of computation to simulate the exact voltages being pulsed through each neuron.
+So, scientists have simplified it down to a bunch of linear equations, generally represented by vectors and matrices, carried out through dot products.</p>
+
+<p>Why are we able to make approximations of neurons using linear algebra? Well, consider the structure of neurons in a real, human brain.</p>
+
+<!-- Image of neurons in a human brain -->
+
+<p><img src="/assets/images/ganintro_neurons.jpg" alt="Neurons" /></p>
+
+<p>Here, you can see how each neuron is connected to many other neurons, with varying connection “intensities”.
+We can make our own model with similar properties, which can be visualized as the following.</p>
+
+<!-- Image of neurons in a neural network -->
+
+<p><img src="/assets/images/ganintro_neuralnetwork.jpg" alt="Neural Network" /></p>
+
+<p>Notice the similar properties here.</p>
+
+<ul>
+  <li>Each neuron is connected to a number of other neurons.</li>
+  <li>Each connection has a certain “intensity” or “weight”. (Can also be thought of as length)</li>
+</ul>
+
+<p>Also, notice some other properties.</p>
+
+<ul>
+  <li>Information/voltages/signals from each neuron only flows from left to right.</li>
+  <li>There are input neurons. (Yellow)</li>
+  <li>There are output neurons. (Red)</li>
+  <li>The neurons in vertical columns can be grouped together and called “layers”, representing each “step” of getting an output.</li>
+</ul>
+
+<p>In a normal human brain with relatively unstructured neurons, we wouldn’t know where the network starts or ends!
+However, modeling a network like this makes it much easier to find definite inputs and outputs, much less calculate outputs from certain inputs.
+So, how can we calculate some outputs?
+First, take some inputs, as a vector to represent each voltage level in the input layer.
+Each connection/edge has a weight/intensity, so how can we represent the voltage encountering such resistance?
+We can multiply the voltage by the edge weight.
+This effectively represents the lessened/heightened voltage due to the connection strength.</p>
+
+<p>Once we get all the voltages at the end of each connection, we need a way to combine them as input to the next node.
+The easiest way to do that is just to get the arithmetic sum.
+Now, we have the voltages of the first layer. Hooray!
+In order to keep going, we repeat the process.</p>
+
+<ol>
+  <li>Multiply the input values by the edge weights.</li>
+  <li>Add them up, and set the sum as the inputs to the next neuron.</li>
+</ol>
+
+<p>It’s that simple!
+One who is familiar with linear algebra may recognize the act of adding a bunch of products.
+That’s right; we can do this all with matrices, dot products, and matrix multiplication!
+We have a vector of all the neuron inputs.
+The weights corresponding to each output neuron can be put into a matrix, where every row corresponds to a different input neuron, and every column corresponds to a different output neuron.
+Multiplying these two matrices will multiply each input value with each edge weight, sum them up nicely, and store it in a vector.
+Linear algebra basically just served us neural networks on a silver platter!</p>
+
+<h2 id="training-a-neural-network">Training a Neural Network</h2>
+
+<p>This topic is much more complex, and could be put in its own blog post.
+However, to get the gist of it:</p>
+
+<p>We first have to have a bunch of data to train the network with.
+That could be the color values of each pixel in an image, amounts of ingredients in certain cookies, survival statistics on the Titanic incident, etc.
+We start out with a neural network with a bunch of random edge weights.
+When we give it some inputs and calculate the output, the neural network will give us some weird random answer, due to all the random numbers in the weights.
+In order for the network to give us sensible answers, we need to adjust each edge weight until the outputs become reasonable.
+We can’t do this manually, though.</p>
+
+<!-- Image of neural networks with weights -->
+
+<p><img src="/assets/images/ganintro_nnweights.png" alt="Neural Network with Weights" /></p>
+
+<p>So, we have a predicted output (from the neural network) and an actual output, from our dataset.
+Given a theoretical value and an actual value, it’s trivial to calculate the percent error.
+Obviously, we will want to minimize this error, because we want the neural network to give answers that represent real answers.</p>
+
+<!-- Image of neural networks with squared errors -->
+
+<p><img src="/assets/images/ganintro_nnerrors.jpg" alt="Neural Network with Errors" /></p>
+
+<p>We adjust the weights of each neuron.
+Our goal is to adjust each weight by minimizing the error of the entire network.
+This can be done by adjusting each weight individually by a small amount and calculating the error for each adjustment.
+Then, using basic calculus, we can use a central difference approximation to approximate the derivative of the error with respect to that edge.
+From there, we can just adjust the weight to minimize the squared error, using the derivative approximation.</p>
+
+<p>Then, we just do that for each edge, et voila!
+We are left with a network that has slightly less error than before.</p>
+
+<h1 id="what-is-deep-learning">What is Deep Learning?</h1>
+
+<p>‘Deep Learning’ is a term that is often thrown around for many different machine learning models.
+A combination of its denotation and some theory behind neural networks will be sufficient to understand its meaning.</p>
+
+<p>Each layer in a neural network is a way for our model to recognize different patterns.
+The first layer would be able to recognize simple patterns.
+For example, it could recognize if two inputs were on at the same time, and output that.
+This could be like an AND gate.
+If we were using images, one node in the first layer may detect a vertical edge with black on the left side.
+It could also detect vertical edges with black on the right side, horizontal edges, edges with different colors, and even dots or circles.</p>
+
+<!-- Image of edge detection -->
+
+<p><img src="/assets/images/ganintro_edgedetection.jpg" alt="Edge Detection" /></p>
+
+<p>Moving on to the second layer, we can use the simple patterns in the first layer to detect slightly more complex patterns.
+For example, the network could combine multiple edges to detect a corner.
+It could also detect parallel edges, which would signify a line.
+Using extra edges and dots, it could detect a larger circle.</p>
+
+<!-- Image of more complex pattern detection -->
+
+<p><img src="/assets/images/ganintro_complexpattern.png" alt="Complex Patterns" /></p>
+
+<p>For the third layer, the network could detect more complex patterns, like an actual eye or mouth.
+Then, the fourth layer could detect a whole face, and the fifth layer may be able to detect a whole person.</p>
+
+<!-- Image of even more complex pattern detection -->
+
+<p><img src="/assets/images/ganintro_complexpattern2.png" alt="More Complex Patterns" /></p>
+
+<p>As you can see, the more layers a neural network has, the more complex patterns it can actually detect.
+When a network has the property of having a lot of layers, it is able to make more complex and deep connections within the dataset that it is given.
+Hence, deep learning.</p>
+
+<p>In basic terms, deep learning just means the network has many layers, or capacity for complexity.</p>
+
+<p>The network I just described is definitely possible, but there are a few things one should note.
+The first thing is that you don’t actually define each node as being able to “recognize” certain patterns, like edges, corners, eyes, or people.
+When you train the network, it <em>alters itself</em> to be able to detect certain patterns.
+Obviously, the stated patterns are possibilities.
+However, trained neural networks tend to be convoluded.
+They usually develop their own patterns, like maybe if a couple strange colors are near eachother.</p>
+
+<p>Using traditional methods of training, as explained above, it wouldn’t be possible to set the patterns that the network understands.
+Instead, it chooses its own patterns, through it adjusting its edge weights by minimizing error.</p>
+
+<p>The second thing we should note, is that I described a convolutional neural network.
+Normal neural networks would have to be able to recognize a pattern on <em>every single combination of pixels</em>, which would take a lot more neurons per layer.
+However, convolutional neural networks are able to use a cool trick to recognize patterns anywhere.</p>
+
+<h1 id="convolutional-neural-networks-cnns">Convolutional Neural Networks (CNNs)</h1>
+
+<p>The main difference between a convolutional neural network and a normal neural network is the convolutional layers.
+This is where a <em>filter</em> is created, and convolved around the image.</p>
+
+<p>A filter can be thought of as transparent tracing paper.
+It contains pixel values, like an image, but it’s main purpose isn’t to be observed, rather, to be compared.</p>
+
+<!-- Image of transparent tracing paper -->
+
+<p><img src="/assets/images/ganintro_transparentpaper.jpg" alt="Transparent Tracing Paper" /></p>
+
+<p>Imagine our input is the rgb values for each pixel in an image.</p>
+
+<!-- Image of filter -->
+
+<p><img src="/assets/images/ganintro_convfilter.png" alt="Filter" /></p>
+
+<p>Speaking at a high level, the filter is first compared with the top left corner of the image.
+The pixels in the image will most likely have a different color than those in the filter, so we calculate an error value.
+This error value is then stored in the top left corner of a new image.
+This new image in reality is just a vector of numbers, but we represent it as an image to show where each number comes from.</p>
+
+<!-- Image of filter making first comparison -->
+
+<p><img src="/assets/images/ganintro_convframe.png" alt="Filter" /></p>
+
+<p>Then, we move the filter over by 1 pixel, which is called a <em>stride</em>.
+And, rinse and repeat.</p>
+
+<ol>
+  <li>Calculate the error</li>
+  <li>Store the error in the corresponding square in a new image</li>
+  <li>Move the filter to the right. (If at the end of a row, move to the beginning of the next row.)</li>
+</ol>
+
+<p>The process of comparing the filter with each section of the image is called <em>convolution</em>.</p>
+
+<!-- Gif of filter making comparisons -->
+
+<p><img src="/assets/images/ganintro_convgif.gif" alt="Filter" /></p>
+
+<p>At the end, we are left with a little image, full of error values.
+The parts with the least error tell us where the filter matched the image the most, and the parts with the most error tell us where the filter matched the least.</p>
+
+<p>Just like any other layer, convolutional layers have inputs and outputs.
+The input is the initial image, and the output is the image filled with the convolving error data.</p>
+
+<p>Generally, there are only a couple convolutional layers per CNN because they take so much more time to compute.
+Plus, once the general patterns are detected, normal neural network layers are able to put two and two together to predict what’s in the image.
+For example, if the convolutional layers determined that there was a dog face, a human face, and a long line in the image, the neural network could determine that the image probably depicts a human walking a dog on a leash.</p>
+
+<!-- Someone walking a dog -->
+
+<p><img src="/assets/images/ganintro_dogwalk.jpg" alt="Someone Walking A Dog" /></p>
+
+<h1 id="generative-networks">Generative Networks</h1>
+
+<p>You may have seen images of human faces that don’t exist, but instead were generated by a computer.
+Those were created using generative networks.</p>
+
+<!-- Image of computer generated faces -->
+
+<p><img src="/assets/images/ganintro_faces.png" alt="Generated Faces" /></p>
+
+<p>As you know, neural networks have a bunch of input and output values.
+We’ve discussed models where the input layer holds an image, but what about the output?
+There’s nothing stopping us from making a large output!
+(Make sure to also consider other things, like ingredients for a certain recipe, or health statistics for a certain person with a disease)</p>
+
+<p>That’s exactly what a generative network is; a neural network that has a bunch of outputs, possibly to be represented a different way.
+(An image, for example.)
+Now, it’s common that these generative networks have a bunch of inputs as well.
+Let’s think about the theory; if there were only a small amount of inputs, the model wouldn’t be able to generate a large variety of outputs.
+Instead, it would be restricted to certain images due to a lack of variety in the inputs.
+However, if we had a ton of inputs, we would have to blame the lack of variety on the edge weights inside the network, which would just come down to training.</p>
+
+<p>The set of all input vectors for such generative networks is called the <em>latent space</em>, which has many interesting properties that I won’t be getting into today. Maybe in the future, though.</p>
+
+<h1 id="cnns-as-generative-networks">CNNs as Generative Networks</h1>
+
+<p>There are many, many different types of generative networks, but the one that I’ll be going into are the generative convolutional networks.</p>
+
+<p>The theory is pretty simple, actually.
+We just treat the input from the latent space as some type of image, itself.
+Then, we can use convolutional layers to not only find and relate certain patterns in the latent space, but also to give different numbers of outputs until we reach the desired image size.</p>
+
+<p>For example, imagine the latent space has 100 dimensions, and we want our output image to be 20x20 pixels large.
+We could have a convolutional layer that detects patterns in the latent space, then feeds the output into another layer called a reverse pooling layer.
+All you need to know about this layer is that it basically just scales up the image.</p>
+
+<p>Using multiple convolutional layers and upscaling layers, you can eventually land at an output vector size of 400, aka 20x20.</p>
+
+<h1 id="discriminator-networks">Discriminator Networks</h1>
+
+<p>A Discriminator is an essential part of a GAN.
+It’s basically a network that takes an image as an input, and has a single output, which is the probability that the image is real or not.
+For a basic understanding, that’s all you need to know!</p>
+
+<h1 id="cnns-as-discriminator-networks">CNNs as Discriminator Networks</h1>
+
+<p>It’s a good idea to use convolutional layers in discriminator networks.
+Since it’s the discriminator’s job to figure out if the image is real or fake, it needs to be really good at recognizing certain things in the given image.
+Luckily, convolutional layers are great at that!
+They help networks recognize patterns.</p>
+
+<p>Convolutional layers allow the discriminator networks to predict with more accuracy and less training, due to the pattern-recognition nature of convolution.</p>
+
+<h1 id="duality">Duality</h1>
+
+<p>Finally, we get to understand what a GAN is, as a whole!
+GAN stands for Generative Adversarial Network.
+We know what a generative network is, so that’s easy to understand.
+The adversarial part is the part that makes GANs so revolutional, though.</p>
+
+<p>As you may know, an adversary is like an opponent.
+The first thing that may come to your mind about a GAN is a network fighting an adversary.
+A strange thought, but one that holds truth nonetheless.
+In the case of a GAN, the adversary is actually a second neural network.</p>
+
+<p>A good analogy of a GAN is like an art forger, and an art critic.
+It’s the art forger’s job to make art that looks like it’s real, so they can sell it and get rich (or something).
+The art critic’s job is to look at a piece of art, and figure out if it is genuine/authentic, or if it has been forged.
+The forger and critic have varying levels of accuracy, though.</p>
+
+<p>At the beginning, the forger may make paintings that look like complete garbage.
+Obviously, the critic would have an easy time figuring out that it was forged.
+But over time, the forger would improve with both feedback from the critic and time spent studying authentic images to imitate them.</p>
+
+<p>Eventually, the forger will become good enough to fool the critic into thinking the fake art was real.
+However, after a long hard search, the art critic is able to find a bunch of work by the forger.
+After studying said work, the critic is able to distinguish forged artwork from authentic once again!</p>
+
+<p>And the cycle continues.
+The forger keeps improving its forging skills while the critic keeps improving its detection skills.
+After a while, what we are left with is a very skilled forger and a very skilled critic.
+So, if you wanted to buy artwork from a certain artist, but you don’t have the money for it, you could just ask the forger for some!</p>
+
+<p>This is the basic idea behind GANs.
+The art forger is the generative network, and the art critic is the adversarial network (aka discriminator).
+We train the generative network using the discriminator’s output (probability of being generated) as an accuracy function.
+We then train the discriminator by feeding it real images from the dataset (which are classified as real) and fake images from the generator (which are classified as fake).
+After many iterations (aka generations/epochs) of training both networks, we should be left with a generative network that is able to somewhat replicate images from our dataset, but they are completely new.</p>
+
+<p>Of course, don’t forget that the dataset doesn’t have to contain images.
+It can contain any type of data we want.
+Images, 3d models, recipes, medical data, text, audio, etc.</p>
+
+<h1 id="why-gans-are-so-powerful">Why GANs are so Powerful</h1>
+
+<p>The fact that GANs have two different networks both competing against each other and learning from each other at the same time is what makes them so powerful.
+If there wasn’t another network to test the accuracy of the other, we would have to rely on only the given dataset for that.
+That means, we would need a larger dataset, possibly orders of magnitude larger, to get similar results.
+Since there’s a larger dataset to train on, that also means that we would need more computing time.</p>
+
+<h1 id="real-world-examples-of-gans">Real World Examples of GANs</h1>
+
+<p>GANs are so revolutionary that large companies have started testing with them.</p>
+
+<p>NVidia, being a GPU designer, <a href="https://research.nvidia.com/sites/default/files/pubs/2017-10_Progressive-Growing-of/karras2018iclr-paper.pdf">has worked a lot with machine learning algorithms</a> to speed them up.
+They are able to generate faces that no one has ever seen before, using GANs.</p>
+
+<p>Google made a machine learning library for easy implementation of GANs.
+They call it TensorFlow, and with it comes some of the best resources for actually learning machine learning without learning all of the theory: <a href="https://developers.google.com/machine-learning/gan">the documentation</a>!</p>
+
+<p>There was a <a href="https://www.youtube.com/watch?v=SacogDL_4JU&amp;list=PLrUdxfaFpuuLyYmu__kWChp_F0weDD6yj">series of youtube videos</a> that actually made me aware of machine learning by a guy named Cary Huang.</p>
+
+<p>Another more interactive example is this online <a href="https://generated.photos/face-generator">face generator</a>.
+They even reference NVidia’s paper on GANs!</p>
+
+<p>Of course, there are countless other examples in the real world.
+You can find those that aren’t listed by just searching interactive GAN (or something).</p>
+
+<h1 id="the-end">The End</h1>
+
+<p>I’m learning about GANs because I plan on using them for a project, which involves generating 3d models using them.
+Of course, this means that I’m also a beginner (as of right now) so I may come back to this post and change some things once I know better.
+But, I think this post serves as a good introduction to what the theory behind a GAN is.
+Anyway, thanks for reading!</p>
+
+<h2 id="good-resources-i-found--have-been-shown">Good Resources I Found / Have Been Shown</h2>
+
+<ul>
+  <li><a href="http://3dgan.csail.mit.edu/">MIT Paper on 3D GANs</a></li>
+  <li><a href="https://machinelearningmastery.com/how-to-develop-a-generative-adversarial-network-for-an-mnist-handwritten-digits-from-scratch-in-keras/">Jason Brownlee’s Basic GAN with MNIST</a></li>
+  <li><a href="https://machinelearningmastery.com/what-are-generative-adversarial-networks-gans/">Jason Brownlee’s Basic Theory Behind GAN</a></li>
+  <li><a href="https://www.youtube.com/watch?v=YRhxdVk_sIs">DeepLizard’s CNN Overview</a></li>
+  <li><a href="https://www.tensorflow.org/tutorials/generative/dcgan">TensorFlow’s GAN tutorial</a></li>
+  <li><a href="https://deeplizard.com/learn/video/m0pIlLfpXWE&gt;">DeepLizard’s Great Deep Learning Youtube Series</a></li>
+  <li><a href="https://www.deeplearningbook.org/">The Deep Learning Book</a></li>
+  <li><a href="https://github.com/NVlabs/stylegan">NVLabs StyleGAN Documentation</a></li>
+  <li><a href="https://www.fast.ai/">FastAI</a></li>
+</ul>
+
+</div>
+
+        <footer class="text-slate-400 pt-10 pb-7">
+          <a class="link" href="/">Home</a> -
+          <a class="link" href="/about">About</a> -
+          <a class="link" href="/resume">Resume</a> -
+          <a class="link" href="/games">Games</a>
+          <br />
+          Copyright © 2023 - Elijah Tarr
+        </footer>
+      </div>
+    </div>
+  </body>
+</html>
