@@ -19,14 +19,29 @@
   h2 {
     @apply text-xl break-normal text-gray-900 dark:text-gray-300 pt-6 pb-2 md:text-2xl;
   }
+  h3 {
+    @apply text-lg break-normal text-gray-800 dark:text-gray-400 pt-2 pb-2 md:text-xl;
+  }
   p, li {
     @apply pt-1 pb-2 text-lg text-gray-800 dark:text-gray-300;
   }
   .link {
     @apply text-sky-800 decoration-sky-800 dark:text-sky-300 dark:decoration-sky-300 hover:underline no-underline;
   }
+  .biglink {
+    @apply link text-2xl font-bold;
+  }
   a {
     @apply link;
+  }
+  ul {
+    @apply list-disc;
+  }
+  ol {
+    @apply list-decimal;
+  }
+  hr {
+    @apply border-gray-400 dark:border-gray-300
   }
 }
 
