@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Creating a live newton fractal using JS + WebGL</title>
+  <meta name="author" content="Elijah Tarr" />
+  <meta name="description" content="oriont's posts" />
+  <meta name="keywords" content="coding,programming" />
+
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <script>
+    if (
+      localStorage.getItem("color-theme") === "dark" ||
+      (!("color-theme" in localStorage) &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches)
+    ) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  </script>
+
+  
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+    integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X"
+    crossorigin="anonymous"
+  />
+
+  <!-- The loading of KaTeX is deferred to speed up page rendering -->
+  <script
+    defer
+    src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"
+    integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4"
+    crossorigin="anonymous"
+  ></script>
+
+  <!-- To automatically render math in text elements, include the auto-render extension: -->
+  <script
+    defer
+    src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+    integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"
+    crossorigin="anonymous"
+    onload="renderMathInElement(document.body)"
+  ></script>
+  
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script
+    async
+    src="https://www.googletagmanager.com/gtag/js?id=G-YW05BX01LE"
+  ></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
+
+    gtag("config", "G-YW05BX01LE");
+  </script>
+</head>
+
+
+  <body class="dark:bg-zinc-800">
+    <div class="container w-full md:max-w-3xl mx-auto pt-2 md:pt-10">
+      <div
+        class="w-full px-4 md:px-6 text-xl text-gray-800 leading-normal"
+        style="font-family: Georgia, serif"
+      >
+        
+        <div class="flex pt-2">
+          <p class="my-auto p-0"><a href="/" class="link pr-5">Home</a></p>
+          <button
+  id="theme-toggle"
+  type="button"
+  class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5"
+>
+  <svg
+    id="theme-toggle-light-icon"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke-width="1.5"
+    stroke="currentColor"
+    class="w-6 h-6 hidden"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"
+    />
+  </svg>
+
+  <svg
+    id="theme-toggle-dark-icon"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke-width="1.5"
+    stroke="currentColor"
+    class="w-6 h-6 hidden"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"
+    />
+  </svg>
+</button>
+
+<script>
+  var themeToggleDarkIcon = document.getElementById("theme-toggle-dark-icon");
+  var themeToggleLightIcon = document.getElementById("theme-toggle-light-icon");
+
+  // Change the icons inside the button based on previous settings
+  if (
+    localStorage.getItem("color-theme") === "dark" ||
+    (!("color-theme" in localStorage) &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches)
+  ) {
+    themeToggleLightIcon.classList.remove("hidden");
+  } else {
+    themeToggleDarkIcon.classList.remove("hidden");
+  }
+
+  var themeToggleBtn = document.getElementById("theme-toggle");
+
+  themeToggleBtn.addEventListener("click", function () {
+    // toggle icons inside button
+    themeToggleDarkIcon.classList.toggle("hidden");
+    themeToggleLightIcon.classList.toggle("hidden");
+
+    // if set via local storage previously
+    if (localStorage.getItem("color-theme")) {
+      if (localStorage.getItem("color-theme") === "light") {
+        document.documentElement.classList.add("dark");
+        localStorage.setItem("color-theme", "dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+        localStorage.setItem("color-theme", "light");
+      }
+
+      // if NOT set via local storage previously
+    } else {
+      if (document.documentElement.classList.contains("dark")) {
+        document.documentElement.classList.remove("dark");
+        localStorage.setItem("color-theme", "light");
+      } else {
+        document.documentElement.classList.add("dark");
+        localStorage.setItem("color-theme", "dark");
+      }
+    }
+  });
+</script>
+
+        </div>
+         
+        <h1 class="pt-3 md:pt-6 text-3xl md:text-4xl">Creating a live newton fractal using JS + WebGL</h1>
+         
+        <p class="md:text-base font-normal text-gray-600 dark:text-gray-400">
+          2021-02-13
+        </p>
+        
+
+        <div id="markdown"><p>Long story short: if you want to see the end product, then click on the following link:</p>
+
+<p><a href="https://oriont.net/newtonfractal">https://oriont.net/newtonfractal</a></p>
+
+<h1 id="in-the-beginning">In the Beginning</h1>
+
+<p>A long time ago, I made a newton fractal simulator using javascript with <code class="language-plaintext highlighter-rouge">p5.js</code>.
+It worked, but it was sloooooow. You can find it at <a href="https://oriont.net/newtonfractal_old/">this link</a> to see for yourself.</p>
+
+<p>I used all the same methods I used in this new version, except the technologies I use are different, which sped up the program a LOT.</p>
+
+<h1 id="whats-newtons-method">What’s Newton’s Method?</h1>
+
+<p>Newton’s method is a way of <em>approximating</em> the roots of a function.
+For example, given the function \(f(x) = x^2 - 1\), the seasoned mathmatician would be able to tell you that the roots are \(1\) and \(-1\).
+They’d be correct, but how did they get there?</p>
+
+<p>Well, simple. You could just factor it out into \((x-1)(x+1)\) and use the roots of each factor, or you could use the quadratic formula,
+etc. However, what if you can’t find the roots so easily, like \(f(x) = x^7 + 5x^4 + 3x - 1\)? In this case, you would use the Newton-Raphson method, also known as just “Newton’s method.”</p>
+
+<p><img src="/assets/images/newtonfractal_graph1.png" alt="Image of Graph" /></p>
+
+<p>First, let’s take a look at the graph of \(f(x)\). Let’s take a random point on the graph, say, \((0.837, 4.253)\). Taking the derivative at that point will yield:</p>
+
+\[\dfrac{\text{d} f}{\text{d} x} = 7x^7 + 20x^3 + 3 \\
+f'(0.837) \approx 17.134\]
+
+<p>Now, how can we get to the closest zero from here? Using deductive reasoning, one can infer that if the slope is positive, then the root must reside at a lower value of x, and if the slope is negative, it must be at a higher x.</p>
+
+<p>What do I mean by this? Well, take a look at the following graph, which has 3 real zeros:</p>
+
+<p><img src="/assets/images/newtonfractal_graph.png" alt="Image of Graph" /></p>
+
+<p>Now, take any arbitrary point (the further away from for the local minima/maxima, the better. I’ll get to that in a bit.) Now, visualize the tangent line of that point. That tangent line will have a positive slope (pointing up-right) or a negative slope (pointing down-left). Now, take a look at the closest zero. You might notice, that <em>usually</em>, the zero of the tangent line is closer to the actual zero, than \((x, 0)\), (x being the x coordinate of your arbitrary point). Why is this?</p>
+
+<p>Well, it’s because the tangent line can be thought as an <em>approximation</em> of the complicated line. When we are talking about approximations, <em>pretty much anything</em> can be an approximation of <em>pretty much anything else</em>. (That’s not to say that they are <em>good</em> approximations). We can treat it as an approximation because it has a zero, which is what we’re looking for.</p>
+
+<p>Now, this approximation (tangent) line that we have, will give us our approximated zero! Since the equation of the tangent line can be modeled (in point-slope form) as:</p>
+
+<p>\(y - f(x_1) = m (x - x_1)\),</p>
+
+<p>Where \((x_1, f(x_1))\) is the point of intersection, and \(m\) is the slope (aka derivative) of the line, we can model the <em>actual</em> tangent line as:</p>
+
+\[y - f(x_1) = f'(x_1) (x - x_1)\]
+
+<p>Now, let’s solve for the y intercept. The y intercept is a point on the line where \(y=0\), so we can set \(y=0\) and solve for x. We don’t set \(f(x_1)\) to zero, because that’s the thing we’re trying to get closer to zero! (If we could just set \(f(x_1)\) to zero, it’d be the same as finding the <em>actual</em> zeros, meaning we go back to the quartic functions or mega factoring or some other method.)</p>
+
+<p>We have:</p>
+
+\[y = 0 \\
+0 - f(x_1) = f'(x_1) (x - x_1) \\
+-\dfrac{f(x_1)}{f'(x_1)} = x - x_1 \\
+x = x_1 - \dfrac{f(x_1)}{f'(x_1)} \\\]
+
+<p>Now, we have an approximation for the y-intercept! It’s modeled as:</p>
+
+\[(x_1 - \dfrac{f(x_1)}{f'(x_1)}, 0)\]
+
+<p>Coming from \((x, y)\), where \(x\) is what we just derived, and \(y=0\), which was the assumption that we made in order to derive it.</p>
+
+<p>Now what? We have an approximation of the y-intercept, but what if it’s bad? What if we want to make it slightly better? Let’s use this method again, but in order for the next approximation to be better, we need to make sure that the initial point we choose is closer than the last one. From the first approximation, we got a point closer to the y-intercept than our initial point, so let’s use that as a starting point.</p>
+
+<p>First, let’s make an equation for the y-intercept approximation, since we’re going to be reusing it.</p>
+
+\[x\_{n+1} = x_n - \dfrac{f(x_n)}{f'(x_n)}\]
+
+<p>I use the expression we got as the y-intercept approximation, except instead of \(x_1\), I use \(x_n\), since we are performing this operation more than once. And I set it equal to \(x_{n+1}\) since it’ll be used to make the <em>next</em> approximation.</p>
+
+<p>To get the starting point, let’s use the x value as the approximation, which then allows us to get the y value using \(f(x)\). So, our next starting point is: \((x_2, f(x_1))\). Running the whole approximation process again, we get:</p>
+
+\[(x_3, f(x_2))\]
+
+<p>Where \(x_3\) is the new approximated y-intercept, calculated using \(x_{n+1}\), or in this case, \(x_{2+1}\). You might be able to see where this is going. Doing this process infinitely many times will <em>theoretically</em> give you the correct y-intercept for a function! But, it can only give <em>one</em> y-intercept at a time.</p>
+
+<p>Notice, if you start at a different point on the graph, the process might converge on a <em>different</em> y-intercept. This is because the tangent line is closer to another y-intercept than the first one.</p>
+
+<p>To give it a formal definition, let \(f(x)\) be a differentiable function, and \((x_0, f(x_0))\) is an arbitrary starting point. Use the following function:</p>
+
+\[x\_{n+1} = x_n - \dfrac{f(x_n)}{f'(x_n)}\]
+
+<p>to approximate a root. Higher values of \(n\) will yield better approximations of the root.</p>
+
+<h1 id="when-newtons-method-fails">When Newton’s Method Fails</h1>
+
+<p>Earlier, I mentioned that you shouldn’t choose a point close to the local minima/maxima. Let’s try it out to see what I mean. Take a point right next to the critical point, and let’s make an approximation. I’ll just do it visually:</p>
+
+<p><img src="/assets/images/newtonfractal_graph2.png" alt="Graph with Tangent" /></p>
+
+<p>You’ll notice, the tangent line is almost horizontal, meaning the y-intercept’s magnitude is going to be very large. Obviously, this y-intercept is going to yield a much worse approximation than the beginning. However, with this function, if we continue using newton’s method, we are actually able to redeem ourselves with an okay approximation soon enough.</p>
+
+<p>If we were to start <em>on</em> the critical point, however, newton’s method would diverge. This is because the slope is 0, meaning the next point would be:</p>
+
+\[x_1 = x_n - \dfrac{f(x_n)}{f'(x_n)} \\
+= x_n - \dfrac{f(x_n)}{0} \\
+= - \infty\]
+
+<p>This is one example of newton’s method diverging.</p>
+
+<p>Some functions aren’t friendly with newton’s method. Take, for example,</p>
+
+\[f(x) = \begin{cases}
+\sqrt{x}, \quad \text{for} x \geq 0 \\
+-\sqrt{-x}, \quad \text{for} x &lt; 0 \\
+\end{cases}\]
+
+<p><img src="/assets/images/newtonfractal_graph3.png" alt="Graph of Cases" /></p>
+
+<p>Using newton’s method on this function, starting at any point except for the y intercept, will always diverge. You would have to use a different method to approximate the roots.</p>
+
+<h1 id="applications-of-newtons-method">Applications of Newton’s Method</h1>
+
+<ul>
+  <li>Approximating Non-linear functions</li>
+</ul>
+
+<p>As the example above showed, what if you want to calculate the roots of a really <em>gnarly</em> function, such as \(y = x^10 + x^9 + x^8 + x^7 + 3x^6 + 3x^5 + x^4 - x^3 + 3x^2 - 8x + 1\)? You could either spend a bunch of time finding factors, or just use newton’s method.</p>
+
+<ul>
+  <li>Optimization</li>
+</ul>
+
+<p>In calculus, optimization problems are when you want to find critical points of a function. The derivatives/slopes at critical points are going to be 0, so you could use newton’s method on the derivative, in order to find said points.</p>
+
+<ul>
+  <li>Cool fractals</li>
+</ul>
+
+<p>This is what we’ll be exploring more today. It turns out that newton’s method works with complex numbers as well, so functions \(f(z)\) can be used to approximate zeros. Interestingly, newton’s method tends to jump around when working with complex numbers, due to the fact that certain operations with with imaginary numbers (i.e. squaring) will produce real numbers, and real numbers can become complex (through \(\sqrt{-x}\)). This means certain groups of points will converge to certain roots using newton’s method, and other groups will converge to other roots. This is what makes for a cool fractal effect.</p>
+
+<h1 id="writing-newtons-method-in-code">Writing Newton’s Method in Code</h1>
+
+<p>Let’s really quickly go over how we could go about writing newton’s method in code. We know how the math works, so now all we have to do is create a function.</p>
+
+<p>The inputs should include: \(f\), \(f'\), \(x_0\), and the amount of steps we should take. This ‘steps’ input is actually just the value of \(n\) we would like our code to stop at, since it could keep going forever. Usually, 25-50 gives <em>pretty</em> good approximations. Right now, it looks like this:</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">newtonsMethod</span><span class="p">(</span><span class="nx">f</span><span class="p">,</span> <span class="nx">fp</span><span class="p">,</span> <span class="nx">x0</span><span class="p">,</span> <span class="nx">steps</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// Code goes here!</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Now, we have to repeatedly apply newton’s method to the variable \(x_n\), <code class="language-plaintext highlighter-rouge">steps</code> amount of times. We can use a simple <code class="language-plaintext highlighter-rouge">for</code> loop for that. Then, we just return \(x_n\). Our function now looks like this:</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">newtonsMethod</span><span class="p">(</span><span class="nx">f</span><span class="p">,</span> <span class="nx">fp</span><span class="p">,</span> <span class="nx">x0</span><span class="p">,</span> <span class="nx">steps</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">let</span> <span class="nx">xn</span> <span class="o">=</span> <span class="nx">x0</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">n</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">n</span> <span class="o">&lt;</span> <span class="nx">steps</span><span class="p">;</span> <span class="nx">n</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">xn</span> <span class="o">-=</span> <span class="nx">f</span><span class="p">(</span><span class="nx">xn</span><span class="p">)</span><span class="o">/</span><span class="nx">fp</span><span class="p">(</span><span class="nx">xn</span><span class="p">);</span>
+
+    <span class="c1">// This is short for:</span>
+    <span class="c1">// let xn1 = xn - (f(xn)/fp(xn));</span>
+    <span class="c1">// xn = xn1;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nx">xn</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>We now have a simple function for approximating the zeros of a function, given that function, its derivative, a starting point, and an approximation depth (<code class="language-plaintext highlighter-rouge">steps</code>). Now, let’s try it out!</p>
+
+<p>As stated at the beginning of the post, the zeros for the function \(f(x) = x^2 - 1\) are: \(x = \pm 1\). Let’s see if our newton’s method function can calculate the zeros. We’ll set the starting point as, say \(x_0=15\). <em>Note:</em> we won’t set \(x_0\) to 0, because that’s a critical point of \(f\), and as explained earlier, it will diverge. We’ll also just use 10 steps, since it should converge pretty quickly.</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">Output:</span><span class="dl">"</span><span class="p">,</span>
+  <span class="nx">newtonsMethod</span><span class="p">(</span>
+    <span class="nx">x</span> <span class="o">=&gt;</span> <span class="nx">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="nx">x</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="o">*</span><span class="nx">x</span><span class="p">,</span>
+    <span class="mi">15</span><span class="p">,</span>
+    <span class="mi">10</span>
+  <span class="p">)</span>
+<span class="p">)</span>
+</code></pre></div></div>
+
+<p><em>Another note:</em> for those less experienced in javascript, the first 2 arguments are <em>lambda</em> functions, which allow you to easily define a function with minimal code. <code class="language-plaintext highlighter-rouge">x =&gt;</code> means that it’s a lambda function, and it should take x as an argument. <code class="language-plaintext highlighter-rouge">x**2 - 1</code> just means \(x^2 - 1\), since javascript reserved the carat (<code class="language-plaintext highlighter-rouge">^</code>) for the bitwise <code class="language-plaintext highlighter-rouge">xor</code> operation.</p>
+
+<p>I added a debug log to the <code class="language-plaintext highlighter-rouge">newtonsMethod</code> function, showing what the value of <code class="language-plaintext highlighter-rouge">xn</code> was for each iteration. Here’s the output:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>15
+7.533333333333333
+3.833038348082596
+2.0469639947277685
+1.267746186322663
+1.028273806328014
+1.0003887136477436
+1.0000000755197944
+1.0000000000000029
+1
+Output: 1
+</code></pre></div></div>
+
+<p>So, after 10 steps, our function gets so close to 1 that whatever precision javascript used to store the number became too low! Now, this is a very simple function so usually you want to use somewhere in the range of 20-50 steps, but for the purposes of demonstration, this should be fine.</p>
+
+<p>Now, let’s see what happens if we start at \(x_0=-15\).</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">Output:</span><span class="dl">"</span><span class="p">,</span>
+  <span class="nx">newtonsMethod</span><span class="p">(</span>
+    <span class="nx">x</span> <span class="o">=&gt;</span> <span class="nx">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="nx">x</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="o">*</span><span class="nx">x</span><span class="p">,</span>
+    <span class="o">-</span><span class="mi">15</span><span class="p">,</span>
+    <span class="mi">10</span>
+  <span class="p">)</span>
+<span class="p">)</span>
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-15
+-7.533333333333333
+-3.833038348082596
+-2.0469639947277685
+-1.267746186322663
+-1.028273806328014
+-1.0003887136477436
+-1.0000000755197944
+-1.0000000000000029
+-1
+Output: -1
+</code></pre></div></div>
+
+<p>We see it converges to -1, which makes sense, because -1 is the closest root to -15!</p>
+
+<h1 id="newtons-fractal">Newton’s Fractal</h1>
+
+<p>In the applications section, I mentioned that newton’s method can make a cool fractal. However, first let’s review some properties of complex numbers.</p>
+
+<p>The identity of complex numbers relies on the following equation:</p>
+
+\[i = \sqrt{-1}\]
+
+<p>Complex numbers can be written as \(a + bi\), where \(a\) is the real part, and \(b\) is the imaginary part. Each complex number can be thought as a point on the complex plane. The complex plane is just a cartesian plane, where the x axis represents real numbers, and the y axis represents complex numbers. Graphing points is simple: just treat \(a\) as an x value, and \(b\) as a y value. So, \(5 + 6i\) can be graphed as so:</p>
+
+<p><img src="/assets/images/newtonfractal_graph4.png" alt="Graph of Complex Number" /></p>
+
+<p>The cool thing with the complex plane is that you can do operations on each point, and you can get different points in return. For example, if we square the point graphed above, we will get a different point. However, squaring a point isn’t as easy as squaring the a and b values separately. Like binomials, we must use the distributive property when multiplying. So, we have:</p>
+
+\[(5 + 6i)^2 \\
+= (5 + 6i)(5 + 6i) \\
+= 25 + 30i + 30i + 36i^2 \\
+= 25 + 60i - 36 \\
+= -11 + 60i\]
+
+<p>Notice how when we squared \(i\), we got \(-1\). That’s just a consequence of the identity discussed earlier. \(i^2 = -1\). Now, our point can be graphed as so:</p>
+
+<p><img src="/assets/images/newtonfractal_graph5.png" alt="Graph of New Complex Number" /></p>
+
+<p>I also mentioned earlier that we can use newton’s method on complex functions. For example, take the function \(f(z) = z^3 + 1\). Just so we can check our answers, let’s solve for the roots first. We have:</p>
+
+\[0 = z^3 + 1 \\
+= (z+1)(z^2-z+1) \\
+z+1 = 0 \\
+z = -1 \\
+z^2 - z + 1 = 0 \\
+(z-\dfrac{1}{2})^2 + \dfrac{3}{4} = 0 \\
+z = \dfrac{1}{2} \pm \dfrac{\sqrt3}{2} i \\\]
+
+<p>Now that we know the roots, let’s use newton’s method. We’ll start at, say, \(z_0=2\). We have:</p>
+
+\[f(z) = z^3 + 1 \\
+f'(z) = 3z^2 \\
+z*0 = 2 \\
+z*{n+1} = z_n - \dfrac{f(z)}{f'(z)} \\
+z_1 = z_0 - \dfrac{z_0^3 - 1}{3z_0^2} \\
+z_1 = 2 - \dfrac{2^3-1}{3 \dot 2^2} \\
+\approx 1.3 + 0.72i \\
+z_2 \approx 0.78 + 0.61i \\
+z_3 \approx 0.44 + 0.74i \\
+z_4 \approx 0.51 + 0.89i \\
+z_5 \approx 0.50 + 0.86i \\
+z_6 \approx 0.50 + 0.86i \\
+z_7 \approx 0.50 + 0.86i \\\]
+
+<p>Towards the end, I stopped showing the process, but I just did the same thing over and over again. Using this method, we can approximate the root, starting at any point on the complex plane! (Except, of course, the critical points of the function, one of which happens to be at \(z=0 + 0i\), since \(3z^2 = 0\))</p>
+
+<p>You may be wondering, “how can I make a fractal using this information?” Well, that is a great question! Recall that newton’s method will give <em>a</em> root, since we have no way of specifying exactly which root we want. We will see that we can, in fact, see which groups of numbers converge to which groups using newton’s method, but only once we graph which numbers converge to which groups.</p>
+
+<p>To show you, I’ll make a graph of the complex plane, where I use newton’s method with function \(f(z) = z^3 + 1\) on each point. If newton’s method converges to \(-1 + 0 i\), I’ll color the point red, if it converges to \(\dfrac{1}{2} + \dfrac{\sqrt3}{2} i\), I’ll color the point green, and if it converges to \(\dfrac{1}{2} - \dfrac{\sqrt3}{2} i\), I’ll color the point blue. Take a look:</p>
+
+<p><img src="/assets/images/newtonfractal_fractal.png" alt="Graph of New Complex Number" /></p>
+
+<p>Wow, a fractal! Yes, making fractals are as simple as that.</p>
+
+<h1 id="including-complex-numbers-in-code">Including Complex Numbers in Code</h1>
+
+<p>Unfortunately, javascript (unlike python) doesn’t have a built-in version of complex numbers for us to use, do we’ll have to make our own. Since there are 2 elements to each complex number–the real and imaginary parts–we can just use an array to store each complex number. (I would use a tuple if they existed in javascript, but alas…) Let’s edit our code to reflect that:</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">newtonsMethod</span><span class="p">(</span><span class="nx">f</span><span class="p">,</span> <span class="nx">fp</span><span class="p">,</span> <span class="nx">x0</span><span class="p">,</span> <span class="nx">steps</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">let</span> <span class="nx">xn</span> <span class="o">=</span> <span class="nx">x0</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">n</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">n</span> <span class="o">&lt;</span> <span class="nx">steps</span><span class="p">;</span> <span class="nx">n</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">xn</span> <span class="o">=</span> <span class="nx">complex_sub</span><span class="p">(</span><span class="nx">xn</span><span class="p">,</span> <span class="nx">complex_div</span><span class="p">(</span><span class="nx">f</span><span class="p">(</span><span class="nx">xn</span><span class="p">),</span> <span class="nx">fp</span><span class="p">(</span><span class="nx">xn</span><span class="p">)))</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nx">xn</span>
+<span class="p">}</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">Output:</span><span class="dl">"</span><span class="p">,</span>
+  <span class="nx">newtonsMethod</span><span class="p">(</span>
+    <span class="nx">x</span> <span class="o">=&gt;</span> <span class="nx">complex_sub</span><span class="p">(</span><span class="nx">complex_pow</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="nx">x</span> <span class="o">=&gt;</span> <span class="nx">complex_mul</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="p">[</span><span class="o">-</span><span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="mi">10</span>
+  <span class="p">)</span>
+<span class="p">)</span>
+</code></pre></div></div>
+
+<p>Notice how I replaced all mathematical operations with functions. Why is that? Well, try multiplying arrays in javascript, or raising them to a power, or subtracting them:</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span>
+<span class="kc">NaN</span>
+
+<span class="o">&gt;&gt;</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span>
+<span class="kc">NaN</span>
+
+<span class="o">&gt;&gt;</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">-</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="kc">NaN</span>
+</code></pre></div></div>
+
+<p>As you can see, we never get the answer we want! We always get <code class="language-plaintext highlighter-rouge">NaN</code>, which stands for “Not a Number”. When javascript tries to perform a mathematical operation, it takes both arguments, in this case, the array and the number, (or another array), and sees that they aren’t compatible. It’s like trying to divide a banana by an apple. It’s not immediately obvious how one could go about such a task, although one could infer… However, javascript isn’t smart enough to infer that, so we have to define it ourselves. Hence the new <code class="language-plaintext highlighter-rouge">complex_...</code> functions.</p>
+
+<p>Writing them should be easy, we just need to figure out how each complex operation affects the real and imaginary parts of the variable. Let’s start with complex subtraction:</p>
+
+\[(a + bi) - (c + di) \\
+a + bi - c - di \\
+(a - c) + (b - d)i \\\]
+
+<p>Similarly, addition can be proved as so:</p>
+
+\[(a + bi) + (c + di) \\
+a + bi + c + di \\
+(a + c) + (b + d)i \\\]
+
+<p>Okay, those were simple. We just use the distributive property on the minus/plus, and group up the real and imaginary parts. What about multiplication and division?</p>
+
+\[(a + bi) (c + di) \\
+ac + adi + bci + bdi^2 \\
+ac + adi + bci - bd \\
+(ac - bd) + (ad + bc)i \\\]
+
+\[\dfrac{(a+bi)}{(c+di)} \\
+\dfrac{(a+bi)(c-di)}{(c+di)(c-di)} \\
+\dfrac{(ac+bd) + (bc - ad)}{c^2 + d^2} \\\]
+
+<p>Multiplication was also relatively easy, I just used the distributive property to multiply the binomials, I used the imaginary identity, and last I just grouped up the numbers again according to their “imaginary-ness”. This last one, complex exponents, is probably the most interesting, as it makes use of <a href="https://en.wikipedia.org/wiki/Euler%27s_formula">Euler’s formula</a>, and the polar form of complex numbers. <a href="https://www.youtube.com/watch?v=Z4PsLt9_ky8">Blackpenredpen has a great video on this proof</a></p>
+
+\[(a + bi)^{(c + di)} \\
+= (re^{i \theta})^{c+di} \\
+r = \sqrt{a^2 + b^2} \\
+\theta = \text{tan}^{-1} \dfrac{b}{a} \\
+= (re^{i \theta})^c \dot (re^{i \theta})^{di} \\
+= r^c e^{i c \theta} \dot r^{di} e^{-d \theta} \\
+= r^c e^{-d \theta} e^{i (c \theta + d \ln r)} \\
+y = c \theta + d \ln r \\
+\theta = r^c e^{-d \theta} (\text{cos} (y) + i \text{sin}(y) \\
+x =r^c e^{-d \theta} \\
+= x \text{cos} y + (x \text{sin} y) i \\\]
+
+<p>Now, we can easily convert these formulas into code using lambda functions:</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">complex_mul</span> <span class="o">=</span> <span class="p">([</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">],</span> <span class="p">[</span><span class="nx">c</span><span class="p">,</span> <span class="nx">d</span><span class="p">])</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="nx">a</span><span class="o">*</span><span class="nx">c</span> <span class="o">-</span> <span class="nx">b</span><span class="o">*</span><span class="nx">d</span><span class="p">,</span> <span class="nx">a</span><span class="o">*</span><span class="nx">d</span> <span class="o">+</span> <span class="nx">b</span><span class="o">*</span><span class="nx">c</span><span class="p">]</span>
+<span class="kd">const</span> <span class="nx">complex_sub</span> <span class="o">=</span> <span class="p">([</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">],</span> <span class="p">[</span><span class="nx">c</span><span class="p">,</span> <span class="nx">d</span><span class="p">])</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="nx">a</span><span class="o">-</span><span class="nx">c</span><span class="p">,</span> <span class="nx">b</span><span class="o">-</span><span class="nx">d</span><span class="p">]</span>
+<span class="kd">const</span> <span class="nx">complex_add</span> <span class="o">=</span> <span class="p">([</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">],</span> <span class="p">[</span><span class="nx">c</span><span class="p">,</span> <span class="nx">d</span><span class="p">])</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="nx">a</span><span class="o">+</span><span class="nx">c</span><span class="p">,</span> <span class="nx">b</span><span class="o">+</span><span class="nx">d</span><span class="p">]</span>
+<span class="kd">const</span> <span class="nx">complex_sqdist</span> <span class="o">=</span> <span class="p">([</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">],</span> <span class="p">[</span><span class="nx">c</span><span class="p">,</span> <span class="nx">d</span><span class="p">])</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="nx">a</span><span class="o">-</span><span class="nx">c</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="nx">b</span><span class="o">-</span><span class="nx">d</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+
+<span class="kd">const</span> <span class="nx">complex_div</span> <span class="o">=</span> <span class="p">([</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">],</span> <span class="p">[</span><span class="nx">c</span><span class="p">,</span> <span class="nx">d</span><span class="p">])</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kd">let</span> <span class="nx">den</span> <span class="o">=</span> <span class="nx">c</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="nx">d</span><span class="o">**</span><span class="mi">2</span>
+  <span class="k">return</span> <span class="p">[(</span><span class="nx">a</span><span class="o">*</span><span class="nx">c</span><span class="o">+</span><span class="nx">b</span><span class="o">*</span><span class="nx">d</span><span class="p">)</span><span class="o">/</span><span class="nx">den</span><span class="p">,</span> <span class="p">(</span><span class="nx">b</span><span class="o">*</span><span class="nx">c</span><span class="o">-</span><span class="nx">a</span><span class="o">*</span><span class="nx">d</span><span class="p">)</span><span class="o">/</span><span class="nx">den</span><span class="p">]</span>
+<span class="p">}</span>
+
+<span class="kd">const</span> <span class="nx">complex_pow</span> <span class="o">=</span> <span class="p">([</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">],</span> <span class="p">[</span><span class="nx">c</span><span class="p">,</span> <span class="nx">d</span><span class="p">])</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kd">let</span> <span class="nx">r</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">sqrt</span><span class="p">(</span><span class="nx">a</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="nx">b</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+  <span class="kd">let</span> <span class="nx">theta</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">atan2</span><span class="p">(</span><span class="nx">b</span><span class="p">,</span> <span class="nx">a</span><span class="p">)</span>
+  <span class="kd">let</span> <span class="nx">x</span> <span class="o">=</span> <span class="nx">r</span><span class="o">**</span><span class="nx">c</span> <span class="o">*</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">exp</span><span class="p">(</span><span class="o">-</span><span class="nx">d</span> <span class="o">*</span> <span class="nx">theta</span><span class="p">)</span>
+  <span class="kd">let</span> <span class="nx">y</span> <span class="o">=</span> <span class="nx">c</span> <span class="o">*</span> <span class="nx">theta</span> <span class="o">+</span> <span class="nx">d</span> <span class="o">*</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">r</span><span class="p">)</span>
+  <span class="k">return</span> <span class="p">[</span><span class="nx">x</span> <span class="o">*</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">cos</span><span class="p">(</span><span class="nx">y</span><span class="p">),</span> <span class="nx">x</span> <span class="o">*</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">sin</span><span class="p">(</span><span class="nx">y</span><span class="p">)]</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><em>Note:</em> I added a function <code class="language-plaintext highlighter-rouge">complex_sqdist</code>, which just computes the squared euclidian distance between 2 complex points. It’s pretty much just the pythagorean theorem. The reason why I keep it squared instead of taking the square root is because square root is one of the most computationally intensive mathematical operations, meaning it takes the most time to compute. If we just leave it out, we can use that time to calculate other points! <em>Double note:</em> The only place I use it is when I check if a point converges to a root.</p>
+
+<p>Now, we can make a quick version of the newton’s fractal using the canvas. I’ll use the following code to create a canvas, then go over every pixel with newton’s method, then color it according to its root.</p>
+
+<p><code class="language-plaintext highlighter-rouge">index.html</code></p>
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html</span> <span class="na">lang=</span><span class="s">"en"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"UTF-8"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">http-equiv=</span><span class="s">"X-UA-Compatible"</span> <span class="na">content=</span><span class="s">"IE=edge"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"viewport"</span> <span class="na">content=</span><span class="s">"width=device-width, initial-scale=1.0"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;title&gt;</span>Document<span class="nt">&lt;/title&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"complexfunctions.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;canvas</span> <span class="na">width=</span><span class="s">"500"</span> <span class="na">height=</span><span class="s">"500"</span> <span class="na">id=</span><span class="s">"canvas"</span><span class="nt">&gt;&lt;/canvas&gt;</span>
+
+    <span class="nt">&lt;script&gt;</span>
+      <span class="c1">// Initialize canvas context</span>
+      <span class="kd">let</span> <span class="nx">c</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">"</span><span class="s2">canvas</span><span class="dl">"</span><span class="p">);</span>
+      <span class="kd">let</span> <span class="nx">ctx</span> <span class="o">=</span> <span class="nx">c</span><span class="p">.</span><span class="nx">getContext</span><span class="p">(</span><span class="dl">"</span><span class="s2">2d</span><span class="dl">"</span><span class="p">);</span>
+
+      <span class="c1">// Define f(x) and f'(x)</span>
+      <span class="kd">let</span> <span class="nx">f</span> <span class="o">=</span> <span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">complex_add</span><span class="p">(</span><span class="nx">complex_pow</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]);</span>
+      <span class="kd">let</span> <span class="nx">fp</span> <span class="o">=</span> <span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">complex_mul</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="nx">complex_pow</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]));</span>
+
+      <span class="c1">// Loop through every pixel</span>
+      <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">x</span> <span class="o">&lt;</span> <span class="nx">c</span><span class="p">.</span><span class="nx">width</span><span class="p">;</span> <span class="nx">x</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">y</span> <span class="o">&lt;</span> <span class="nx">c</span><span class="p">.</span><span class="nx">height</span><span class="p">;</span> <span class="nx">y</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+
+          <span class="c1">// Map the position elements from [0, 500] to [-1, 1]</span>
+          <span class="kd">let</span> <span class="nx">pos</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="nx">x</span> <span class="o">-</span> <span class="nx">c</span><span class="p">.</span><span class="nx">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="nx">c</span><span class="p">.</span><span class="nx">height</span><span class="p">,</span>
+            <span class="p">(</span><span class="nx">y</span> <span class="o">-</span> <span class="nx">c</span><span class="p">.</span><span class="nx">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="nx">c</span><span class="p">.</span><span class="nx">height</span><span class="p">,</span>
+          <span class="p">];</span>
+
+          <span class="c1">// Perform newton's method on the position</span>
+          <span class="kd">let</span> <span class="nx">convergingRoot</span> <span class="o">=</span> <span class="nx">newtonsMethod</span><span class="p">(</span><span class="nx">f</span><span class="p">,</span> <span class="nx">fp</span><span class="p">,</span> <span class="nx">pos</span><span class="p">,</span> <span class="mi">20</span><span class="p">);</span>
+
+          <span class="c1">// Set color based on root it diverges to</span>
+          <span class="k">if</span> <span class="p">(</span><span class="nx">complex_sqdist</span><span class="p">(</span><span class="nx">convergingRoot</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.866</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="mf">0.1</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">ctx</span><span class="p">.</span><span class="nx">fillStyle</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">rgb(255, 0, 0)</span><span class="dl">"</span><span class="p">;</span>
+          <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">complex_sqdist</span><span class="p">(</span><span class="nx">convergingRoot</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.866</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="mf">0.1</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">ctx</span><span class="p">.</span><span class="nx">fillStyle</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">rgb(0, 255, 0)</span><span class="dl">"</span><span class="p">;</span>
+          <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">complex_sqdist</span><span class="p">(</span><span class="nx">convergingRoot</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="mf">0.1</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">ctx</span><span class="p">.</span><span class="nx">fillStyle</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">rgb(0, 0, 255)</span><span class="dl">"</span><span class="p">;</span>
+          <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="c1">// Make it black if it diverges/doesn't converge quick enough</span>
+            <span class="nx">ctx</span><span class="p">.</span><span class="nx">fillStyle</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">rgb(0, 0, 0)</span><span class="dl">"</span>
+          <span class="p">}</span>
+
+          <span class="c1">// Draw the pixel</span>
+          <span class="nx">ctx</span><span class="p">.</span><span class="nx">fillRect</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="nt">&lt;/script&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">complexfunctions.js</code></p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">complex_mul</span> <span class="o">=</span> <span class="p">([</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">],</span> <span class="p">[</span><span class="nx">c</span><span class="p">,</span> <span class="nx">d</span><span class="p">])</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="nx">a</span><span class="o">*</span><span class="nx">c</span> <span class="o">-</span> <span class="nx">b</span><span class="o">*</span><span class="nx">d</span><span class="p">,</span> <span class="nx">a</span><span class="o">*</span><span class="nx">d</span> <span class="o">+</span> <span class="nx">b</span><span class="o">*</span><span class="nx">c</span><span class="p">]</span>
+<span class="kd">const</span> <span class="nx">complex_sub</span> <span class="o">=</span> <span class="p">([</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">],</span> <span class="p">[</span><span class="nx">c</span><span class="p">,</span> <span class="nx">d</span><span class="p">])</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="nx">a</span><span class="o">-</span><span class="nx">c</span><span class="p">,</span> <span class="nx">b</span><span class="o">-</span><span class="nx">d</span><span class="p">]</span>
+<span class="kd">const</span> <span class="nx">complex_add</span> <span class="o">=</span> <span class="p">([</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">],</span> <span class="p">[</span><span class="nx">c</span><span class="p">,</span> <span class="nx">d</span><span class="p">])</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="nx">a</span><span class="o">+</span><span class="nx">c</span><span class="p">,</span> <span class="nx">b</span><span class="o">+</span><span class="nx">d</span><span class="p">]</span>
+<span class="kd">const</span> <span class="nx">complex_sqdist</span> <span class="o">=</span> <span class="p">([</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">],</span> <span class="p">[</span><span class="nx">c</span><span class="p">,</span> <span class="nx">d</span><span class="p">])</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="nx">a</span><span class="o">-</span><span class="nx">c</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="nx">b</span><span class="o">-</span><span class="nx">d</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+
+<span class="kd">const</span> <span class="nx">complex_div</span> <span class="o">=</span> <span class="p">([</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">],</span> <span class="p">[</span><span class="nx">c</span><span class="p">,</span> <span class="nx">d</span><span class="p">])</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kd">let</span> <span class="nx">den</span> <span class="o">=</span> <span class="nx">c</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="nx">d</span><span class="o">**</span><span class="mi">2</span>
+  <span class="k">return</span> <span class="p">[(</span><span class="nx">a</span><span class="o">*</span><span class="nx">c</span><span class="o">+</span><span class="nx">b</span><span class="o">*</span><span class="nx">d</span><span class="p">)</span><span class="o">/</span><span class="nx">den</span><span class="p">,</span> <span class="p">(</span><span class="nx">b</span><span class="o">*</span><span class="nx">c</span><span class="o">-</span><span class="nx">a</span><span class="o">*</span><span class="nx">d</span><span class="p">)</span><span class="o">/</span><span class="nx">den</span><span class="p">]</span>
+<span class="p">}</span>
+
+<span class="kd">const</span> <span class="nx">complex_pow</span> <span class="o">=</span> <span class="p">([</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">],</span> <span class="p">[</span><span class="nx">c</span><span class="p">,</span> <span class="nx">d</span><span class="p">])</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kd">let</span> <span class="nx">r</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">sqrt</span><span class="p">(</span><span class="nx">a</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="nx">b</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+  <span class="kd">let</span> <span class="nx">theta</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">atan2</span><span class="p">(</span><span class="nx">b</span><span class="p">,</span> <span class="nx">a</span><span class="p">)</span>
+  <span class="kd">let</span> <span class="nx">x</span> <span class="o">=</span> <span class="nx">r</span><span class="o">**</span><span class="nx">c</span> <span class="o">*</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">exp</span><span class="p">(</span><span class="o">-</span><span class="nx">d</span> <span class="o">*</span> <span class="nx">theta</span><span class="p">)</span>
+  <span class="kd">let</span> <span class="nx">y</span> <span class="o">=</span> <span class="nx">c</span> <span class="o">*</span> <span class="nx">theta</span> <span class="o">+</span> <span class="nx">d</span> <span class="o">*</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">r</span><span class="p">)</span>
+  <span class="k">return</span> <span class="p">[</span><span class="nx">x</span> <span class="o">*</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">cos</span><span class="p">(</span><span class="nx">y</span><span class="p">),</span> <span class="nx">x</span> <span class="o">*</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">sin</span><span class="p">(</span><span class="nx">y</span><span class="p">)]</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">newtonsMethod</span><span class="p">(</span><span class="nx">f</span><span class="p">,</span> <span class="nx">fp</span><span class="p">,</span> <span class="nx">x0</span><span class="p">,</span> <span class="nx">steps</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">let</span> <span class="nx">xn</span> <span class="o">=</span> <span class="nx">x0</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">steps</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">xn</span> <span class="o">=</span> <span class="nx">complex_sub</span><span class="p">(</span><span class="nx">xn</span><span class="p">,</span> <span class="nx">complex_div</span><span class="p">(</span><span class="nx">f</span><span class="p">(</span><span class="nx">xn</span><span class="p">),</span> <span class="nx">fp</span><span class="p">(</span><span class="nx">xn</span><span class="p">)))</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nx">xn</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>And now, if you run this page on your browser, after waiting a couple seconds, in front of you is a newton fractal of your own!</p>
+
+<h1 id="other-things">Other things</h1>
+
+<p>You may notice that the newton fractal you just created takes a long time to render a single frame versus <a href="https://oriont.net/newtonfractal">the one I made</a>. That’s because you use the CPU to calculate every pixel. In your computer, there are a couple ways you can make a calculation. The first way is through the CPU, which is really good at executing complex instructions. Another option is through the GPU, which is really good at executing simple instructions, at ton of times over, at the same time.</p>
+
+<p>WebGL2 is a way to harness the power of your GPU, and it allows newton’s method to be sped up to a rate at which you can hardly notice the rendering time! This is what I use on my version, and writing the code for it is slightly different. However, I won’t be getting into that in this blog post, since it is a whole other topic and deserves its own post.</p>
+
+<p>Another thing you may notice is that you can just type in a math expression on my newton fractal, instead of typing out all the complex functions to replicate the equation in code. That’s because I made my own lexer, parser, and compiler in order to take a mathematical expression and turn it into GLSL code to run on the GPU. It currently isn’t that good–I rushed it in order to have a finished version of my fractal working, and I haven’t had time to make it more efficient.</p>
+
+<p>Parsers, Lexers, and Compilers are also very complicated and deserve their own post to fully do them justice.</p>
+
+<p>Some time in the future, I will get around to making them, but for now, enjoy the fractals! Thanks for reading!</p>
+
+<!-- pictures here! -->
+
+<p><img src="/assets/images/newtonfractal_fractal1.png" alt="Fractal 1" />
+<img src="/assets/images/newtonfractal_fractal2.png" alt="Fractal 2" />
+<img src="/assets/images/newtonfractal_fractal3.png" alt="Fractal 3" />
+<img src="/assets/images/newtonfractal_fractal4.png" alt="Fractal 4" />
+<img src="/assets/images/newtonfractal_fractal5.png" alt="Fractal 5" />
+<img src="/assets/images/newtonfractal_fractal6.png" alt="Fractal 6" />
+$$</p>
+</div>
+
+        <footer class="text-slate-400 pt-10 pb-7">
+          <a class="link" href="/">Home</a> -
+          <a class="link" href="/about">About</a> -
+          <a class="link" href="/resume">Resume</a> -
+          <a class="link" href="/games">Games</a>
+          <br />
+          Copyright © 2023 - Elijah Tarr
+        </footer>
+      </div>
+    </div>
+  </body>
+</html>
