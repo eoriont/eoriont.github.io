@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Voronoi Diagrams</title>
+  <meta name="author" content="Elijah Tarr" />
+  <meta name="description" content="oriont's posts" />
+  <meta name="keywords" content="coding,programming" />
+
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <script>
+    if (
+      localStorage.getItem("color-theme") === "dark" ||
+      (!("color-theme" in localStorage) &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches)
+    ) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  </script>
+
+  
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+    integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X"
+    crossorigin="anonymous"
+  />
+
+  <!-- The loading of KaTeX is deferred to speed up page rendering -->
+  <script
+    defer
+    src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"
+    integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4"
+    crossorigin="anonymous"
+  ></script>
+
+  <!-- To automatically render math in text elements, include the auto-render extension: -->
+  <script
+    defer
+    src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+    integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"
+    crossorigin="anonymous"
+    onload="renderMathInElement(document.body)"
+  ></script>
+  
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script
+    async
+    src="https://www.googletagmanager.com/gtag/js?id=G-YW05BX01LE"
+  ></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
+
+    gtag("config", "G-YW05BX01LE");
+  </script>
+</head>
+
+
+  <body class="dark:bg-zinc-800">
+    <div class="container w-full md:max-w-3xl mx-auto pt-2 md:pt-10">
+      <div
+        class="w-full px-4 md:px-6 text-xl text-gray-800 leading-normal"
+        style="font-family: Georgia, serif"
+      >
+        
+        <div class="flex pt-2">
+          <p class="my-auto p-0"><a href="/" class="link pr-5">Home</a></p>
+          <button
+  id="theme-toggle"
+  type="button"
+  class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5"
+>
+  <svg
+    id="theme-toggle-light-icon"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke-width="1.5"
+    stroke="currentColor"
+    class="w-6 h-6 hidden"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"
+    />
+  </svg>
+
+  <svg
+    id="theme-toggle-dark-icon"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke-width="1.5"
+    stroke="currentColor"
+    class="w-6 h-6 hidden"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"
+    />
+  </svg>
+</button>
+
+<script>
+  var themeToggleDarkIcon = document.getElementById("theme-toggle-dark-icon");
+  var themeToggleLightIcon = document.getElementById("theme-toggle-light-icon");
+
+  // Change the icons inside the button based on previous settings
+  if (
+    localStorage.getItem("color-theme") === "dark" ||
+    (!("color-theme" in localStorage) &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches)
+  ) {
+    themeToggleLightIcon.classList.remove("hidden");
+  } else {
+    themeToggleDarkIcon.classList.remove("hidden");
+  }
+
+  var themeToggleBtn = document.getElementById("theme-toggle");
+
+  themeToggleBtn.addEventListener("click", function () {
+    // toggle icons inside button
+    themeToggleDarkIcon.classList.toggle("hidden");
+    themeToggleLightIcon.classList.toggle("hidden");
+
+    // if set via local storage previously
+    if (localStorage.getItem("color-theme")) {
+      if (localStorage.getItem("color-theme") === "light") {
+        document.documentElement.classList.add("dark");
+        localStorage.setItem("color-theme", "dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+        localStorage.setItem("color-theme", "light");
+      }
+
+      // if NOT set via local storage previously
+    } else {
+      if (document.documentElement.classList.contains("dark")) {
+        document.documentElement.classList.remove("dark");
+        localStorage.setItem("color-theme", "light");
+      } else {
+        document.documentElement.classList.add("dark");
+        localStorage.setItem("color-theme", "dark");
+      }
+    }
+  });
+</script>
+
+        </div>
+         
+        <h1 class="pt-3 md:pt-6 text-3xl md:text-4xl">Voronoi Diagrams</h1>
+         
+
+        <div id="markdown"><h2 id="intro">Intro</h2>
+
+<p>Recently, my research has involved going into Delaunay triangulations and Voronoi diagrams, here is what I’ve learned so far. If you find any errata please feel free to reach out to me via email on my contact page!</p>
+
+<h2 id="definitions">Definitions</h2>
+
+<p>Let \(P \subset \mathbb{R}^d\) be a set of points that we are interested in.</p>
+
+<p>We define the Voronoi region \(V_S\) of a subset \(S \subset P\) of points as the intersection of halfspaces of each point in and out of the subset.</p>
+
+\[V_S = \bigcap \limits_{\forall x \in S,\; y \in P \backslash S} H(x, y)\]
+
+<p>Here, \(P \backslash S\) is the largest subset of \(S\) that doesn’t contain any item \(P\) contains. 
+Also, \(H(x, y)\) is the halfspace on the side of \(x\). 
+This is the region of \(\mathbb{R}^n\) such that each point it contains has \(S\) as its closest \(k=|S|\) neighbors.</p>
+
+<p>We define the order-k Voronoi diagram \(\mathbb{V}_k (P)\) as the set of all such regions.</p>
+
+\[\mathbb{V}_k (P) = \{V_S \mid S \subset P \wedge |S| = k\}\]
+
+<p>Here, 
+\(|S|\) 
+is the cardinality of set S.</p>
+
+<p>There are multiple definitions for the voronoi diagram, but this is my favorite so far because of it’s combinatorial nature; it lets us think of each region as corresponding to a subset of the points.</p>
+
+<p>We let 
+\(|\mathbb{V}_k (P)|\)
+denote the number of regions the Voronoi diagram contains. This value is constrained by the amount of possible subsets of $P$, as per our definition.</p>
+
+<p>This means we can impose the constraint 
+\(|\mathbb{V}_k (P)| \leq {|P| \choose k}\)
+.</p>
+
+<p>Looking at a picture of an order-k 2-dimensional Voronoi diagram lets us see how many regions there are. 
+Obviously in this case, there are less than \({|P| \choose k}\) regions. My research is interested in the upper and lower bounds on \(|\mathbb{V}_k (P)|\), along with conditions on \(P\) that allow us to make the bound tighter.</p>
+
+<p><img src="/assets/images/voronoi.gif" alt="Voronoi" /></p>
+
+<h3 id="another-definition">Another definition</h3>
+
+<p>Voronoi regions can also be defined as follows:</p>
+
+\[V_S = \{x \in \mathbb{R}^d \mid d(x, y) \leq d(x, z) \; \forall y \in S,\; z \in P \backslash S\}\]
+
+<p>where \(d(x, y)\) is some distance metric between points \(x\) and \(y\). This definition emphasizes how the region contains \(S\) as its nearest neighbors.</p>
+
+<h2 id="properties">Properties</h2>
+
+<p>Now we delve into some cool properties of Voronoi diagrams.</p>
+
+<ol>
+  <li>
+    <p>Each Voronoi region is a convex set.</p>
+
+    <p>A convex set is a set \(S\) in which any combination of elements \(\alpha s_i + \beta s_j \in S\) where \(\alpha + \beta = 1\) and \(\alpha, \beta \in (0, 1)\).</p>
+
+    <p>Notice in the picture how some regions can be infinite, or <strong>open</strong>.
+ This doesn’t violate the convex set property. 
+ A naive way to think about this is that each region is made out of purely convex corners.</p>
+
+    <p>Maybe I’ll provide a proof for this in the future…</p>
+
+    <p>This property allows us to use convex optimization techniques, which have been studied in depth, to optimize functions in Voronoi regions, which can be useful in machine learning applications, or in constructing diagrams as in <a href="https://dl.acm.org/doi/10.1145/100216.100259">Mulmuey 1990</a>.</p>
+
+    <p>#### Plug!</p>
+
+    <p>Side note: for my research I’m trying to figure out if the following conjecture made in the Mulmuley paper is true or not:</p>
+
+    <blockquote>
+      <p>\(\Omega(k^d n)\) is almost certainly a lower bound [of 
+ \(|\mathbb{V}_k (P)|\)
+ ] but the proof seems elusive.</p>
+    </blockquote>
+
+    <p>If you happen to have any information on this, please let me know!</p>
+  </li>
+  <li>
+    <p>The graph dual of a 2-dimensional order-1 Voronoi diagram is the unique Delaunay Triangulation corresponding to \(P\).</p>
+
+    <p><img src="/assets/images/voronoi_delaunay.webp" alt="Voronoi Delaunay" /></p>
+
+    <p>In the future, I’ll probably make a post on Delaunay triangulations as well. Refer to the above picture for the graph dual of a Voronoi diagram. <br />
+ (The voronoi diagram is in red, the Delaunay triangulation is in black)</p>
+
+    <p>Each Voronoi region has a point in the Delaunay triangulation, and these points are connected if the regions share an edge.</p>
+
+    <p>Higher dimensional Delaunay “mosaics” exist as well for higher dimensional and higher order Voronoi diagrams as well, but they haven’t studied as completely as 2-dimensional order-1 diagrams.</p>
+  </li>
+</ol>
+
+<h2 id="some-applications">Some Applications</h2>
+
+<p>There are tons of applications of Voronoi diagrams and Delaunay triangulations in fields like crystallography, but I am more interested in machine learning.</p>
+
+<ol>
+  <li>
+    <p>Simple classifiers</p>
+
+    <p>For classifiers such as \(k\)-Nearest Neighbors classifiers, Voronoi diagrams show which regions sample data can be located in to categorize as certain classes.</p>
+  </li>
+  <li>
+    <p>HNSW</p>
+
+    <p>The reason I got into this area of research was because as I was going through the HNSW paper, I noticed they make this bold assumption that slightly randomized small worlds graphs approximate Delaunay triangulations and don’t provide any backing behind it.</p>
+
+    <p>Delaunay triangulation graphs have high navigability properties, ideal for graph search, which HNSW builds on in their paper. In practice, HNSW shows incredible results akin to logarithmic, as specified in the paper. But, the theoretical grounds haven’t been fully covered as far as I can tell.</p>
+  </li>
+</ol>
+
+<h2 id="the-end">The End</h2>
+
+<p>Thanks for reading! If you’re interested in what I’m doing, feel free to reach out and contact me!</p>
+</div>
+
+        <footer class="text-slate-400 pt-10 pb-7">
+          <a class="link" href="/">Home</a> -
+          <a class="link" href="/about">About</a> -
+          <a class="link" href="/resume">Resume</a> -
+          <a class="link" href="/games">Games</a>
+          <br />
+          Copyright © 2023 - Elijah Tarr
+        </footer>
+      </div>
+    </div>
+  </body>
+</html>

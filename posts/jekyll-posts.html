@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Removing the date from jekyll posts</title>
+  <meta name="author" content="Elijah Tarr" />
+  <meta name="description" content="oriont's posts" />
+  <meta name="keywords" content="coding,programming" />
+
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <script>
+    if (
+      localStorage.getItem("color-theme") === "dark" ||
+      (!("color-theme" in localStorage) &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches)
+    ) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  </script>
+
+  
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script
+    async
+    src="https://www.googletagmanager.com/gtag/js?id=G-YW05BX01LE"
+  ></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
+
+    gtag("config", "G-YW05BX01LE");
+  </script>
+</head>
+
+
+  <body class="dark:bg-zinc-800">
+    <div class="container w-full md:max-w-3xl mx-auto pt-2 md:pt-10">
+      <div
+        class="w-full px-4 md:px-6 text-xl text-gray-800 leading-normal"
+        style="font-family: Georgia, serif"
+      >
+        
+        <div class="flex pt-2">
+          <p class="my-auto p-0"><a href="/" class="link pr-5">Home</a></p>
+          <button
+  id="theme-toggle"
+  type="button"
+  class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5"
+>
+  <svg
+    id="theme-toggle-light-icon"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke-width="1.5"
+    stroke="currentColor"
+    class="w-6 h-6 hidden"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"
+    />
+  </svg>
+
+  <svg
+    id="theme-toggle-dark-icon"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke-width="1.5"
+    stroke="currentColor"
+    class="w-6 h-6 hidden"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"
+    />
+  </svg>
+</button>
+
+<script>
+  var themeToggleDarkIcon = document.getElementById("theme-toggle-dark-icon");
+  var themeToggleLightIcon = document.getElementById("theme-toggle-light-icon");
+
+  // Change the icons inside the button based on previous settings
+  if (
+    localStorage.getItem("color-theme") === "dark" ||
+    (!("color-theme" in localStorage) &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches)
+  ) {
+    themeToggleLightIcon.classList.remove("hidden");
+  } else {
+    themeToggleDarkIcon.classList.remove("hidden");
+  }
+
+  var themeToggleBtn = document.getElementById("theme-toggle");
+
+  themeToggleBtn.addEventListener("click", function () {
+    // toggle icons inside button
+    themeToggleDarkIcon.classList.toggle("hidden");
+    themeToggleLightIcon.classList.toggle("hidden");
+
+    // if set via local storage previously
+    if (localStorage.getItem("color-theme")) {
+      if (localStorage.getItem("color-theme") === "light") {
+        document.documentElement.classList.add("dark");
+        localStorage.setItem("color-theme", "dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+        localStorage.setItem("color-theme", "light");
+      }
+
+      // if NOT set via local storage previously
+    } else {
+      if (document.documentElement.classList.contains("dark")) {
+        document.documentElement.classList.remove("dark");
+        localStorage.setItem("color-theme", "light");
+      } else {
+        document.documentElement.classList.add("dark");
+        localStorage.setItem("color-theme", "dark");
+      }
+    }
+  });
+</script>
+
+        </div>
+         
+        <h1 class="pt-3 md:pt-6 text-3xl md:text-4xl">Removing the date from jekyll posts</h1>
+         
+        <p class="md:text-base font-normal text-gray-600 dark:text-gray-400">
+          2020-08-15
+        </p>
+        
+
+        <div id="markdown"><p>Quick answer: edit your <code class="language-plaintext highlighter-rouge">_config.yml</code> file, and add this singular line:</p>
+
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">permalink</span><span class="pi">:</span> <span class="s">/posts/:title</span>
+</code></pre></div></div>
+
+<p>That removes the part visible to the reader. (The URL part) The last thing you would have to remove is the date from the filename.
+Unfortunately, jekyll is built with the date required in the filename, so you can’t actually remove it.
+BUT, there is an easy workaround, and that is to just make another collection.
+You could name it something like ‘blogs’ but you can’t name it ‘posts’ because that collection is built in.
+<br /><br />
+Read this <a href="https://stackoverflow.com/questions/27099427/jekyll-filename-without-date">stackoverflow post</a>.</p>
+
+<h1 id="my-site">My site</h1>
+
+<p>This website was built on jekyll, after I finally gave up trying to find the perfect static site generator.
+I used <a href="https://www.11ty.dev/">eleventy</a> for my site, and I remember it did its job well! I remade my whole site in eleventy a couple years ago, but I had one major problem.
+The problem was that github pages didn’t support serving from a folder in your main website. (for me, eoriont.github.io) This left me with a couple options.</p>
+
+<ol>
+  <li>I could stick with github, but I would be forced to add a second repository called <code class="language-plaintext highlighter-rouge">site</code> or something where I would put my eleventy code.
+Then, I’d just stick my compiled html, css, and js into my <code class="language-plaintext highlighter-rouge">eoriont.github.io</code> repository. This method was flawed obviously, because I needed 2 different
+repositories for 1 singular project, which would require me to double stage, commit, and push every time I made a change. This option wasn’t going to work.
+<br /><br /></li>
+  <li>I could use some other web hosting site with a server, like <a href="https://heroku.com">heroku</a> or <a href="https://www.netlify.com/">netlify</a>. I tried out netlify and was surprised at how easy it was to setup the site, but there was another problem! I use github pages for a lot of my repositories, because most of them run on html or js canvas. With netlify,
+I wouldn’t be able to host my repositories without putting them all on their own pages. This option wouldn’t work either.</li>
+</ol>
+
+<p>I ended up going with option 1, and they way I got around the double shenanigans was to just not make any posts at all. :P
+Luckily, github decided to get their stuff together and add the “serving from folder” feature as a beta feature. Unluckily, I wasn’t aware of this until I decided to completely waste a day relearning jekyll and redoing my site in it.
+You could imagine how I felt when I finally went to github and it asked me if I wanted to serve from a folder…</p>
+
+<h1 id="adding-cool-code-blocks">Adding cool code blocks</h1>
+
+<p>Another problem with my site was code blocks. I don’t really know or care what the correct way to add custom css is, so I just kind of added it on top of the theme I have. That screwed a lot of things over, so I fixed it and here’s how:</p>
+
+<p>First, you need some code to format. This is some markdown for a simple line of js:</p>
+
+<div class="language-md highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">```</span><span class="nl">js
+</span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">hi there!</span><span class="dl">"</span><span class="p">);</span>
+<span class="p">```</span>
+</code></pre></div></div>
+
+<p>Now, you have to install a code theme! Go to <a href="https://jwarby.github.io/jekyll-pygments-themes/languages/ruby.html">this example gallery</a> and find something that looks appealing to you, and paste it into a new file called <code class="language-plaintext highlighter-rouge">_sass/syntax.scss</code>. This is obviously a sass file, but it’s fine because jekyll comes with a sass compiler in the box. Now all you need to do is go to the main css file, (mine is in <code class="language-plaintext highlighter-rouge">css/style.scss</code>) and import the sass file, like so:</p>
+
+<div class="language-scss highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">---</span>
+<span class="nt">---</span>
+
+<span class="o">@</span><span class="nt">import</span> <span class="s2">"syntax.scss"</span><span class="p">;</span>
+
+<span class="c1">// other stuff</span>
+</code></pre></div></div>
+
+<p>If you get any compiler errors, it’s likely because the compiler doesn’t like comments. If you have a regex find and replace tool handy, you can past this in to the find to select all the comments: <code class="language-plaintext highlighter-rouge">/\*[\s\S]*\*/</code>
+Then you would just ‘replace all’ with nothing.</p>
+
+<p><br /><br />
+That’s all!</p>
+
+</div>
+
+        <footer class="text-slate-400 pt-10 pb-7">
+          <a class="link" href="/">Home</a> -
+          <a class="link" href="/about">About</a> -
+          <a class="link" href="/resume">Resume</a> -
+          <a class="link" href="/games">Games</a>
+          <br />
+          Copyright © 2023 - Elijah Tarr
+        </footer>
+      </div>
+    </div>
+  </body>
+</html>
