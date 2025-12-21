@@ -9,9 +9,13 @@
         style="font-family: Georgia, serif"
       >
         {% if page.name != "index.html" %}
-        <div class="flex pt-2">
-          <p class="my-auto p-0"><a href="/" class="link pr-5">Home</a></p>
-          {% include dark_button.html %}
+        <div class="flex flex-wrap items-center gap-4 pt-2">
+          <a href="/" class="link">About</a>
+          <span class="dark:text-white">/</span>
+          <a href="/assets/pdf/ElijahTarr_CV_2025.pdf" class="link">CV</a>
+          <span class="dark:text-white">/</span>
+          <a href="/posts" class="link">Posts</a>
+          <span class="ml-auto">{% include dark_button.html %}</span>
         </div>
         {% endif %} {% if page.title %}
         <h1 class="pt-3 md:pt-6 text-3xl md:text-4xl">{{ page.title }}</h1>
@@ -24,12 +28,11 @@
         <div id="markdown">{{ content }}</div>
 
         <footer class="text-slate-400 pt-10 pb-7">
-          <a class="link" href="/">Home</a> -
-          <a class="link" href="/about">About</a> -
-          <a class="link" href="/resume">Resume</a> -
-          <a class="link" href="/games">Games</a>
+          <a class="link" href="/">About</a> -
+          <a class="link" href="/assets/pdf/ElijahTarr_CV_2025.pdf">CV</a> -
+          <a class="link" href="/posts">Posts</a>
           <br />
-          Copyright © 2023 - Elijah Tarr
+          Copyright © 2026 - Elijah Tarr
         </footer>
       </div>
     </div>
